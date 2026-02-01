@@ -1,0 +1,59 @@
+---
+import "../styles/global.css";
+import { Github, Instagram, Facebook, Linkedin, ArrowRight } from '@lucide/astro';
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Onest:wght@100..900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <title>Cris Lucero</title>
+</head>
+<body class="bg-[#151419] h-screen w-screen font-['Onest']">
+<!--main content-->
+<div class="mx-auto h-full max-w-7xl px-6 py-20 md:px-12 md:py-40">
+    <div class="flex flex-col w-full h-full">
+        <div class="flex flex-col gap-8">
+            <div class="flex flex-col gap-5">
+                <div class="flex flex-col gap-3">
+                    <div class="w-18 h-18 rounded-full">
+                        <img src="/profile.webp" alt="Cris Lucero" class="w-full h-full object-cover rounded-full">
+                    </div>
+                    <h1 class="text-white text-3xl md:text-5xl font-bold w-full flex flex-col">Software Developer.
+                        <span> Problem Solver.</span></h1>
+                </div>
+                <p class="text-zinc-500 max-w-2xl">I leverage technology to solve complex challenges and drive business growth. Currently focused on building digital solutions that help companies scale and succeed.</p>
+                <div class="flex gap-4">
+                    <a href="https://github.com/lucerocris" target="_blank" rel="noopener noreferrer">
+                        <Github class="text-zinc-500 hover:text-white transition-colors cursor-pointer" />
+                    </a>
+
+                    <a href="https://www.instagram.com/crislucero22/" target="_blank" rel="noopener noreferrer">
+                        <Instagram class="text-zinc-500 hover:text-white transition-colors cursor-pointer" />
+                    </a>
+
+                    <a href="https://www.facebook.com/crislawrence.lucero" target="_blank" rel="noopener noreferrer">
+                        <Facebook class="text-zinc-500 hover:text-white transition-colors cursor-pointer" />
+                    </a>
+
+                    <a href="https://www.linkedin.com/in/cris-lawrence-lucero-29639433b/" target="_blank" rel="noopener noreferrer">
+                        <Linkedin class="text-zinc-500 hover:text-white transition-colors cursor-pointer" />
+                    </a>
+                </div>
+            </div>
+            <a href="/projects" class="group w-fit"> <div class="flex items-center gap-2">
+                <p class="text-white font-medium border-b border-transparent group-hover:border-white transition-colors duration-300">
+                    View Projects
+                </p>
+                <ArrowRight class="w-5 h-5 text-white transition-transform group-hover:translate-x-1 duration-300"/>
+            </div>
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

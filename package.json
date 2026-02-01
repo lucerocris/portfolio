@@ -1,0 +1,13 @@
+{
+  "name":"astro-payload-monorepo",
+  "version":"1.0.0",
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "author": "Cris Lucero",
+  "main": "index.js",
+  "scripts": {
+    "dev:payload": "cd backend && pnpm dev",
+    "dev:astro": "cd frontend && pnpm dev"
+  }
+}

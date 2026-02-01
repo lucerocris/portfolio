@@ -1,0 +1,30 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Onest:wght@100..900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
+@theme {
+    --font-roboto: "Roboto", sans-serif;
+}
+
+/* Solid background only */
+body {
+    background-color: #1A191F;
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Subtle grain overlay */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: url('/grain.png') repeat;
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Ensure content stays above */
+body > * {
+    position: relative;
+    z-index: 1;
+}
