@@ -1,6 +1,6 @@
 {
-  "name":"astro-payload-monorepo",
-  "version":"1.0.0",
+  "name": "astro-payload-monorepo",
+  "version": "1.0.0",
   "description": "",
   "keywords": [],
   "license": "ISC",
@@ -9,5 +9,6 @@
   "scripts": {
     "dev:payload": "cd backend && pnpm dev",
     "dev:astro": "cd frontend && pnpm dev"
-  }
+  },
+  "packageManager": "pnpm@10.34.5"
 }

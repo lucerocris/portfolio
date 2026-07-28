@@ -1,18 +1,13 @@
 ---
-import "../styles/global.css";
+import Layout from "../layouts/Layout.astro";
 import { Github, Instagram, Facebook, Linkedin, ArrowRight } from '@lucide/astro';
 ---
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Onest:wght@100..900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <title>Cris Lucero</title>
-</head>
-<body class="bg-[#151419] h-screen w-screen font-['Onest']">
+<Layout
+        title="Cris Lucero — Software Developer"
+        description="Software developer building web, mobile and commerce products end to end — from database schema to shipped interface."
+        bodyClass="bg-[#151419] min-h-screen w-screen font-['Onest']"
+>
+
 <!--main content-->
 <div class="mx-auto h-full max-w-7xl px-6 py-20 md:px-12 md:py-40">
     <div class="flex flex-col w-full h-full">
@@ -25,7 +20,9 @@ import { Github, Instagram, Facebook, Linkedin, ArrowRight } from '@lucide/astro
                     <h1 class="text-white text-3xl md:text-5xl font-bold w-full flex flex-col">Software Developer.
                         <span> Problem Solver.</span></h1>
                 </div>
-                <p class="text-zinc-500 max-w-2xl">I leverage technology to solve complex challenges and drive business growth. Currently focused on building digital solutions that help companies scale and succeed.</p>
+                <p class="text-zinc-500 max-w-2xl">I build web, mobile and commerce products for businesses — the
+                    product your customers use, and the admin tools your team runs it with. One person accountable,
+                    from first commit to live.</p>
                 <div class="flex gap-4">
                     <a href="https://github.com/lucerocris" target="_blank" rel="noopener noreferrer">
                         <Github class="text-zinc-500 hover:text-white transition-colors cursor-pointer" />
@@ -54,6 +51,4 @@ import { Github, Instagram, Facebook, Linkedin, ArrowRight } from '@lucide/astro
         </div>
     </div>
 </div>
-</body>
-</html>
-
+</Layout>

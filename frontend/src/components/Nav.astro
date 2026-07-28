@@ -1,0 +1,42 @@
+---
+/**
+ * Site navigation. Before this existed, /projects was the only internal link
+ * anywhere and /about was orphaned — reachable by URL and indexable, but
+ * unlinked from the site itself.
+ */
+const path = Astro.url.pathname;
+
+const links = [
+    {href: "/projects", label: "Projects"},
+    {href: "/about", label: "About"},
+];
+
+const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
+---
+
+<header class="mx-auto w-full max-w-7xl px-6 pt-8 md:px-12 md:pt-10">
+    <nav class="flex items-center justify-between" aria-label="Main">
+        <a href="/"
+           class="text-sm font-medium text-white transition-opacity hover:opacity-70"
+           aria-current={path === "/" ? "page" : undefined}>
+            Cris Lucero
+        </a>
+
+        <ul class="flex items-center gap-6">
+            {links.map(({href, label}) => (
+                    <li>
+                        <a
+                                href={href}
+                                aria-current={isActive(href) ? "page" : undefined}
+                                class:list={[
+                                    "text-sm transition-colors",
+                                    isActive(href) ? "text-white" : "text-zinc-500 hover:text-white",
+                                ]}
+                        >
+                            {label}
+                        </a>
+                    </li>
+            ))}
+        </ul>
+    </nav>
+</header>

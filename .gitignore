@@ -1,3 +1,7 @@
 /node_modules
 
 node_modules/
+# Local env files — these hold live credentials
+.env
+.env.*
+!.env.example

@@ -1,11 +1,8 @@
 ---
-import "../styles/global.css";
-import {Breadcrumbs} from "astro-breadcrumbs";
-import "astro-breadcrumbs/breadcrumbs.css";
+import Layout from "../layouts/Layout.astro";
 import {ArrowRight} from "@lucide/astro";
 import type {Project} from "@backend";
-
-const CMS_URL = "http://localhost:3000";
+import {CMS_URL, asMedia, sizedUrl} from "../lib/cms";
 let projects: Project[] = [];
 
 try {
@@ -17,29 +14,20 @@ try {
 }
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Onest:wght@100..900&display=swap" rel="stylesheet">
-    <title>Projects | Cris Lucero</title>
-</head>
-<body class="bg-[#151419] min-h-screen w-screen text-white font-['Onest']">
+<Layout
+        title="Projects | Cris Lucero"
+        description="Selected work — a cafe discovery platform, a pickleball tournament system, an event platform, a commerce storefront and a D2C travel brand."
+>
+
 
 <div class="mx-auto h-full max-w-7xl px-6 py-20 md:px-12 md:py-40">
 
-    <div class="mb-6">
-        <Breadcrumbs
-                indexText="Home"
-                linkTextFormat="capitalized"
-        />
-    </div>
-
     <div class="flex flex-col gap-4 w-full">
-        <h2 class="text-3xl font-semibold">See how I have helped businesses achieve their goals.</h2>
+        <h1 class="text-3xl font-semibold">Products businesses run on.</h1>
+        <p class="max-w-2xl text-zinc-400">
+            Work across discovery, events, tournaments and commerce — each taken from database to interface,
+            with the admin tools that keep it running day to day.
+        </p>
     </div>
 
     <div class="mt-10 md:mt-16 flex flex-col gap-16">
@@ -48,21 +36,24 @@ try {
                 <p class="text-zinc-500">No projects found. Make sure the Payload server is running.</p>
         )}
 
-        {projects.map((project, index) => (
+        {projects.map((project) => (
                 <div class="flex flex-col-reverse lg:flex-row gap-10">
                     <div class="flex-1 flex flex-col gap-4">
 
                         {/* Logo Handling */}
                         {project.logo && typeof project.logo !== 'string' && project.logo.url && (
                                 <img
-                                        src={`${CMS_URL}${project.logo.url}`}
+                                        src={sizedUrl(asMedia(project.logo), 200)}
+                                        loading="lazy"
                                         alt={`${project.title} logo`}
-                                        class="w-20 object-contain"
+                                        class:list={["object-contain",
+                                            project.logo.width && project.logo.height && project.logo.width / project.logo.height > 4
+                                                ? "w-56" : "w-20"]}
                                 />
                         )}
 
                         <div class="flex flex-col gap-3">
-                            <h4 class="text-lg">{project.subtitle}</h4>
+                            <h2 class="text-lg">{project.subtitle}</h2>
                             <p class="border-t border-t-zinc-500 py-3 text-zinc-300">
                                 {project.shortDescription}
                             </p>
@@ -83,7 +74,8 @@ try {
                     <div class="flex-1 flex rounded-lg">
                         {project.featuredImage && typeof project.featuredImage !== 'string' && project.featuredImage.url && (
                                 <img
-                                        src={`${CMS_URL}${project.featuredImage.url}`}
+                                        src={sizedUrl(asMedia(project.featuredImage), 900)}
+                                        loading="lazy"
                                         alt={project.title}
                                         class="rounded-lg object-cover w-full h-auto"
                                 />
@@ -94,30 +86,5 @@ try {
     </div>
 </div>
 
-<style is:global>
-    .c-breadcrumbs__link {
-        color: #71717a !important;
-        text-decoration: none;
-        transition: color 0.2s ease;
-    }
 
-    .c-breadcrumbs__link:hover {
-        color: #ffffff !important;
-    }
-
-    .c-breadcrumbs__item:last-child .c-breadcrumbs__link {
-        color: #ffffff !important;
-        pointer-events: none;
-    }
-
-    .c-breadcrumbs__separator {
-        color: #52525b !important;
-    }
-
-    .c-breadcrumbs {
-        font-family: 'Onest', sans-serif;
-        font-size: 0.875rem;
-    }
-</style>
-</body>
-</html>
+</Layout>

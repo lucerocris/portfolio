@@ -107,6 +107,49 @@ export const Projects: CollectionConfig = {
                         },
                     ],
                 },
+                {
+                    label: 'Gallery',
+                    fields: [
+                        {
+                            // Extra shots shown further down the case study page,
+                            // e.g. the web app, the admin console, mobile screens.
+                            name: 'gallery',
+                            type: 'array',
+                            label: 'Gallery',
+                            labels: {
+                                singular: 'Image',
+                                plural: 'Images',
+                            },
+                            admin: {
+                                description: 'Screens shown below the write-up. Drag to reorder.',
+                            },
+                            fields: [
+                                {
+                                    name: 'image',
+                                    type: 'upload',
+                                    relationTo: 'media',
+                                    required: true,
+                                },
+                                {
+                                    // Rendered under the image
+                                    name: 'caption',
+                                    type: 'text',
+                                    admin: {
+                                        description: 'e.g. "Admin console — cafe moderation".',
+                                    },
+                                },
+                                {
+                                    name: 'wide',
+                                    type: 'checkbox',
+                                    label: 'Full width',
+                                    admin: {
+                                        description: 'Span the whole row instead of sharing it. Good for dashboards; leave off for phone screens.',
+                                    },
+                                },
+                            ],
+                        },
+                    ],
+                },
             ],
         },
     ],

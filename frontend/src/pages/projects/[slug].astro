@@ -1,0 +1,315 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import {Breadcrumbs} from "astro-breadcrumbs";
+import "astro-breadcrumbs/breadcrumbs.css";
+import {ArrowLeft, ArrowUpRight} from "@lucide/astro";
+import type {Project} from "@backend";
+import {lexicalToHtml} from "../../lib/lexical";
+import {CMS_URL, sizedUrl} from "../../lib/cms";
+const {slug} = Astro.params;
+
+let project: Project | null = null;
+
+try {
+    const response = await fetch(
+        `${CMS_URL}/api/projects?where[slug][equals]=${encodeURIComponent(slug ?? "")}&depth=1&limit=1`
+    );
+    const data = await response.json();
+    project = data.docs?.[0] ?? null;
+} catch (error) {
+    console.error(`Failed to fetch project "${slug}" from Payload:`, error);
+}
+
+// SSR (output: 'server'), so an unknown slug can answer with a real 404.
+if (!project) {
+    Astro.response.status = 404;
+}
+
+const body = lexicalToHtml(project?.content);
+const services = (project?.services ?? []).map((s) => s.serviceName).filter(Boolean);
+const techStack = (project?.techStack ?? []).map((t) => t.techName).filter(Boolean);
+
+const featuredImage =
+    project?.featuredImage && typeof project.featuredImage !== "string" ? project.featuredImage : null;
+
+// Drop any gallery row whose upload is missing or not populated (depth=1 gives us objects).
+// Portrait shots (phone screenshots) would otherwise render taller than the
+// viewport in a grid column sized for landscape, so flag them for capping.
+const gallery = (project?.gallery ?? []).flatMap((item) => {
+    const image = item.image && typeof item.image !== "string" ? item.image : null;
+    if (!image?.url) return [];
+    const portrait = Boolean(image.width && image.height && image.height > image.width);
+    return [{image, url: image.url, caption: item.caption, wide: item.wide, portrait}];
+});
+
+// Share cards use the project's own hero, falling back to the profile photo.
+const ogImage = sizedUrl(featuredImage, 900) ?? "/profile.webp";
+---
+
+<Layout
+        title={project ? `${project.title} | Cris Lucero` : "Project not found | Cris Lucero"}
+        description={project?.shortDescription ?? "This project could not be found."}
+        ogImage={ogImage}
+        ogType="article"
+>
+
+
+<div class="mx-auto h-full max-w-7xl px-6 py-20 md:px-12 md:py-40">
+
+    <div class="mb-6">
+        <Breadcrumbs
+                indexText="Home"
+                linkTextFormat="capitalized"
+        />
+    </div>
+
+    {!project && (
+            <div class="flex flex-col gap-6">
+                <h1 class="text-3xl font-semibold md:text-5xl">Project not found</h1>
+                <p class="max-w-xl text-zinc-500">
+                    There is no project with the slug <span class="text-zinc-300">{slug}</span>. It may have been
+                    renamed, or the Payload server may not be running.
+                </p>
+                <a href="/projects" class="group w-fit">
+                    <div class="flex items-center gap-2">
+                        <ArrowLeft
+                                class="h-5 w-5 text-white transition-transform duration-300 group-hover:-translate-x-1"/>
+                        <p class="border-b border-transparent font-medium text-white transition-colors duration-300 group-hover:border-white">
+                            All projects
+                        </p>
+                    </div>
+                </a>
+            </div>
+    )}
+
+    {project && (
+            <article class="flex flex-col gap-12 md:gap-16">
+
+                {/* Header */}
+                <header class="flex flex-col gap-6">
+                    <div class="flex flex-col gap-3">
+                        {/* No logo here — most are wordmarks that just repeat the h1.
+                            The listing page still shows them. */}
+                        <h1 class="text-3xl font-semibold md:text-5xl">{project.title}</h1>
+                        {project.subtitle && (
+                                <p class="max-w-3xl text-lg text-zinc-300 md:text-xl">{project.subtitle}</p>
+                        )}
+                    </div>
+
+                    {project.liveLink && (
+                            <a
+                                    href={project.liveLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="group w-fit"
+                            >
+                                <div class="flex items-center gap-2">
+                                    <p class="border-b border-transparent font-medium text-white transition-colors duration-300 group-hover:border-white">
+                                        Visit {project.title}
+                                    </p>
+                                    <ArrowUpRight
+                                            class="h-5 w-5 text-white transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1"/>
+                                </div>
+                            </a>
+                    )}
+                </header>
+
+                {/* Featured image */}
+                {featuredImage?.url && (
+                        <img
+                                src={sizedUrl(featuredImage, 900)}
+                                alt={featuredImage.alt || project.title}
+                                class="h-auto w-full rounded-lg object-cover"
+                        />
+                )}
+
+                {/* Body + sidebar */}
+                <div class="flex flex-col gap-12 lg:flex-row lg:gap-16">
+
+                    <div class="flex-1">
+                        {body ? (
+                                <section class="flex flex-col gap-4">
+                                    <h2 class="border-b border-zinc-500 pb-3 text-sm tracking-wide text-zinc-500 uppercase">
+                                        About the project
+                                    </h2>
+                                    <div class="case-study-body" set:html={body}/>
+                                </section>
+                        ) : (
+                                <p class="text-zinc-500">No write-up for this project yet.</p>
+                        )}
+                    </div>
+
+                    {(services.length > 0 || techStack.length > 0) && (
+                            <aside class="flex w-full flex-col gap-10 lg:w-72 lg:shrink-0">
+
+                                {services.length > 0 && (
+                                        <section class="flex flex-col gap-4">
+                                            <h2 class="border-b border-zinc-500 pb-3 text-sm tracking-wide text-zinc-500 uppercase">
+                                                Provided services
+                                            </h2>
+                                            <ul class="flex flex-col gap-2">
+                                                {services.map((service) => (
+                                                        <li class="text-zinc-300">{service}</li>
+                                                ))}
+                                            </ul>
+                                        </section>
+                                )}
+
+                                {techStack.length > 0 && (
+                                        <section class="flex flex-col gap-4">
+                                            <h2 class="border-b border-zinc-500 pb-3 text-sm tracking-wide text-zinc-500 uppercase">
+                                                Technology stack
+                                            </h2>
+                                            <ul class="flex flex-wrap gap-2">
+                                                {techStack.map((tech) => (
+                                                        <li class="rounded-full border border-zinc-700 px-3 py-1 text-sm text-zinc-300">
+                                                            {tech}
+                                                        </li>
+                                                ))}
+                                            </ul>
+                                        </section>
+                                )}
+                            </aside>
+                    )}
+                </div>
+
+                {/* Gallery */}
+                {gallery.length > 0 && (
+                        <section class="flex flex-col gap-6">
+                            <h2 class="border-b border-zinc-500 pb-3 text-sm tracking-wide text-zinc-500 uppercase">
+                                Gallery
+                            </h2>
+                            <div class="grid grid-cols-1 items-start gap-6 sm:grid-cols-2">
+                                {gallery.map((item) => (
+                                        <figure class:list={["flex flex-col gap-3", item.wide && "sm:col-span-2"]}>
+                                            <img
+                                                    src={sizedUrl(item.image, 900)}
+                                                    alt={item.caption || item.image.alt || project.title}
+                                                    class:list={[
+                                                        "rounded-lg",
+                                                        item.portrait
+                                                            ? "mx-auto max-h-[36rem] w-auto object-contain"
+                                                            : "h-auto w-full object-cover",
+                                                    ]}
+                                                    loading="lazy"
+                                                    width={item.image.width ?? undefined}
+                                                    height={item.image.height ?? undefined}
+                                            />
+                                            {item.caption && (
+                                                    <figcaption class="text-sm text-zinc-500">{item.caption}</figcaption>
+                                            )}
+                                        </figure>
+                                ))}
+                            </div>
+                        </section>
+                )}
+
+                {/* Footer nav */}
+                <footer class="border-t border-zinc-800 pt-8">
+                    <a href="/projects" class="group w-fit">
+                        <div class="flex items-center gap-2">
+                            <ArrowLeft
+                                    class="h-5 w-5 text-white transition-transform duration-300 group-hover:-translate-x-1"/>
+                            <p class="border-b border-transparent font-medium text-white transition-colors duration-300 group-hover:border-white">
+                                All projects
+                            </p>
+                        </div>
+                    </a>
+                </footer>
+            </article>
+    )}
+</div>
+
+<style is:global>
+    .c-breadcrumbs__link {
+        color: #71717a !important;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    .c-breadcrumbs__link:hover {
+        color: #ffffff !important;
+    }
+
+    .c-breadcrumbs__item:last-child .c-breadcrumbs__link {
+        color: #ffffff !important;
+        pointer-events: none;
+    }
+
+    .c-breadcrumbs__separator {
+        color: #52525b !important;
+    }
+
+    .c-breadcrumbs {
+        font-family: 'Onest', sans-serif;
+        font-size: 0.875rem;
+    }
+
+    /* Rich text coming from Payload's Lexical editor. */
+    .case-study-body {
+        color: #d4d4d8;
+        max-width: 65ch;
+    }
+
+    .case-study-body > * + * {
+        margin-top: 1.25rem;
+    }
+
+    .case-study-body h2,
+    .case-study-body h3,
+    .case-study-body h4 {
+        color: #ffffff;
+        font-weight: 600;
+        margin-top: 2rem;
+    }
+
+    .case-study-body h2 {
+        font-size: 1.5rem;
+    }
+
+    .case-study-body h3 {
+        font-size: 1.25rem;
+    }
+
+    .case-study-body a {
+        color: #ffffff;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+
+    .case-study-body ul,
+    .case-study-body ol {
+        padding-left: 1.5rem;
+    }
+
+    .case-study-body ul {
+        list-style: disc;
+    }
+
+    .case-study-body ol {
+        list-style: decimal;
+    }
+
+    .case-study-body li + li {
+        margin-top: 0.5rem;
+    }
+
+    .case-study-body blockquote {
+        border-left: 2px solid #52525b;
+        padding-left: 1rem;
+        color: #a1a1aa;
+        font-style: italic;
+    }
+
+    .case-study-body code {
+        background: #27272a;
+        border-radius: 0.25rem;
+        padding: 0.125rem 0.375rem;
+        font-size: 0.875em;
+    }
+
+    .case-study-body hr {
+        border-color: #3f3f46;
+    }
+</style>
+</body>
