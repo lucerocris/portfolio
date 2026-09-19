@@ -1,0 +1,97 @@
+---
+/**
+ * The "you're in" screen after the /start quiz. Rendered inside /start (shown
+ * by the quiz's JS) and on /start/thanks (where the no-JS form lands).
+ * Each button hides itself when its value in src/lib/funnel.ts is empty.
+ */
+import {ArrowRight, CalendarCheck, Check, Mail, MessageCircle} from "@lucide/astro";
+import {bookingUrl, contactEmail, funnel, messengerUrl} from "../lib/funnel";
+
+interface Props {
+    /** Heading level id, so the quiz can move focus here. */
+    headingId?: string;
+}
+
+const {headingId = "thanks-title"} = Astro.props;
+
+const booking = bookingUrl();
+const messenger = messengerUrl();
+const email = contactEmail();
+const hasContact = Boolean(booking || messenger || email);
+
+const next = [
+    {
+        when: "Next",
+        what: "I look at your page, how quickly inquiries get answered, and how a guest gets from “how much?” to a confirmed booking.",
+    },
+    {
+        when: `Within ${funnel.auditTurnaround}`,
+        what: "You get a short audit with 3 fixes, in priority order, sent the way you asked.",
+    },
+    {
+        when: "If it helps",
+        what: "A free 15-minute call to walk through it. No pressure to hire me.",
+    },
+];
+---
+
+<div class="thanks">
+    <div class="thanks-badge" aria-hidden="true">
+        <Check size={22} stroke-width={2.5}/>
+    </div>
+
+    <p class="thanks-greeting" data-thanks-greeting>Thank you.</p>
+    <h2 id={headingId} class="thanks-title" tabindex="-1">
+        Got it. I’ll send your audit within {funnel.auditTurnaround}.
+    </h2>
+
+    {hasContact && (
+            <div class="thanks-cta">
+                <p class="thanks-lead">Want to talk it through sooner?</p>
+                <div class="thanks-buttons">
+                    {booking && (
+                            <a href={booking} target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                                <CalendarCheck size={18} aria-hidden="true"/>
+                                Book a free 15-minute call now
+                                <ArrowRight size={18} aria-hidden="true" class="btn-arrow"/>
+                            </a>
+                    )}
+                    {messenger && (
+                            <a href={messenger} target="_blank" rel="noopener noreferrer"
+                               class:list={["btn", booking ? "btn-secondary" : "btn-primary"]}>
+                                <MessageCircle size={18} aria-hidden="true"/>
+                                Message me on Messenger
+                            </a>
+                    )}
+                    {email && !booking && !messenger && (
+                            <a href={`mailto:${email}`} class="btn btn-primary">
+                                <Mail size={18} aria-hidden="true"/>
+                                Email me
+                            </a>
+                    )}
+                </div>
+                <p class="thanks-reply">
+                    <span class="dot" aria-hidden="true"></span>
+                    I reply {funnel.replyTime}.
+                    {email && (booking || messenger) && (
+                            <>You can also email <a href={`mailto:${email}`}>{email}</a>.</>
+                    )}
+                </p>
+            </div>
+    )}
+
+    <div class="thanks-next">
+        <h3 class="thanks-next-title">What happens next</h3>
+        <ol>
+            {next.map((item, i) => (
+                    <li>
+                        <span class="thanks-num" aria-hidden="true">{i + 1}</span>
+                        <div>
+                            <p class="thanks-when">{item.when}</p>
+                            <p class="thanks-what">{item.what}</p>
+                        </div>
+                    </li>
+            ))}
+        </ol>
+    </div>
+</div>

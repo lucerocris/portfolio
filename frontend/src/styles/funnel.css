@@ -1,0 +1,1035 @@
+/*
+ * Styles for the /start funnel and its thank-you screen. Everything is scoped
+ * under .funnel so nothing leaks into the rest of the site.
+ *
+ * States, set on .funnel:
+ *   .is-enhanced         JS is running: one question per screen.
+ *   [data-view=intro]    phones only: the pitch, with a Start button.
+ *   [data-view=quiz]     phones: the quiz alone. Desktop shows both columns.
+ *   [data-view=done]     the thank-you screen.
+ * Without JS none of these are set and it's one long, normal form.
+ */
+
+.funnel {
+    --f-bg: #151419;
+    --f-panel: rgb(255 255 255 / 0.025);
+    --f-panel-hover: rgb(255 255 255 / 0.05);
+    --f-panel-active: rgb(255 255 255 / 0.085);
+    --f-line: #27272a;
+    --f-line-strong: #3f3f46;
+    --f-line-hover: #71717a;
+    --f-muted: #a1a1aa;
+    --f-soft: #d4d4d8;
+    --f-danger: #fca5a5;
+    --f-danger-line: #f87171;
+    --f-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+    color: #fff;
+}
+
+.funnel *:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+}
+
+/* ---------- Layout ---------- */
+
+.funnel-shell {
+    margin: 0 auto;
+    max-width: 80rem;
+    padding: 2rem 1.5rem 6rem;
+    display: grid;
+    gap: 3rem;
+}
+
+@media (min-width: 768px) {
+    .funnel-shell {
+        padding: 3rem 3rem 8rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .funnel-shell {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 35rem);
+        gap: 4rem;
+        align-items: start;
+        padding-top: 4.5rem;
+    }
+
+    .pitch {
+        position: sticky;
+        top: 3rem;
+    }
+}
+
+@media (min-width: 1280px) {
+    .funnel-shell {
+        gap: 7rem;
+    }
+}
+
+.funnel[data-view="done"] .funnel-shell {
+    grid-template-columns: minmax(0, 44rem);
+    justify-content: center;
+}
+
+.funnel[data-view="done"] .pitch {
+    display: none;
+}
+
+@media (max-width: 1023.98px) {
+    .funnel[data-view="intro"] .quiz {
+        display: none;
+    }
+
+    .funnel[data-view="quiz"] .pitch {
+        display: none;
+    }
+}
+
+.funnel:not(.is-enhanced) .js-only,
+.funnel.is-enhanced .nojs-only,
+.funnel [hidden] {
+    display: none !important;
+}
+
+/* ---------- Pitch ---------- */
+
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.875rem 0.375rem 0.625rem;
+    border: 1px solid var(--f-line-strong);
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    color: var(--f-soft);
+    background: var(--f-panel);
+}
+
+.eyebrow .dot {
+    flex: none;
+}
+
+.dot {
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: #4ade80;
+    box-shadow: 0 0 0 4px rgb(74 222 128 / 0.15);
+}
+
+.pitch-title {
+    margin-top: 1.5rem;
+    font-size: clamp(2.125rem, 1.4rem + 3.2vw, 3.75rem);
+    line-height: 1.04;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+}
+
+.pitch-title .quiet {
+    color: var(--f-muted);
+}
+
+.pitch-lead {
+    margin-top: 1.5rem;
+    max-width: 38rem;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--f-muted);
+}
+
+.pitch-lead strong {
+    color: #fff;
+    font-weight: 500;
+}
+
+.pitch-start {
+    margin-top: 2rem;
+}
+
+.pitch-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: var(--f-muted);
+}
+
+.pitch-meta li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.gets {
+    margin-top: 2.75rem;
+    border-top: 1px solid var(--f-line);
+}
+
+.gets-title {
+    padding-top: 1.5rem;
+    font-size: 0.875rem;
+    color: var(--f-muted);
+}
+
+.gets ol {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 1.25rem;
+}
+
+.gets li {
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    gap: 1rem;
+}
+
+.gets-num,
+.thanks-num {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    border: 1px solid var(--f-line-strong);
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--f-soft);
+}
+
+.gets-head,
+.thanks-when {
+    font-weight: 500;
+    color: #fff;
+    line-height: 2rem;
+}
+
+.gets-body,
+.thanks-what {
+    color: var(--f-muted);
+    max-width: 44ch;
+}
+
+.proof {
+    margin-top: 2.5rem;
+    padding: 1.25rem 1.25rem 1.375rem;
+    border-radius: 1.25rem;
+    border: 1px solid var(--f-line);
+    background: var(--f-panel);
+}
+
+.proof-who {
+    font-weight: 500;
+}
+
+.proof-body {
+    margin-top: 0.375rem;
+    color: var(--f-muted);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+}
+
+.proof-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.proof-list li {
+    padding: 0.3rem 0.75rem;
+    border: 1px solid var(--f-line-strong);
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    color: var(--f-soft);
+}
+
+/* ---------- Quiz card ---------- */
+
+@media (min-width: 1024px) {
+    .quiz-card {
+        border: 1px solid var(--f-line);
+        border-radius: 1.75rem;
+        background: var(--f-panel);
+        padding: 2.5rem;
+        box-shadow: 0 40px 80px -40px rgb(0 0 0 / 0.6);
+    }
+
+    .funnel.is-enhanced .quiz-card {
+        min-height: 36rem;
+    }
+}
+
+.quiz-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 2.75rem;
+}
+
+.quiz-count {
+    font-size: 0.875rem;
+    color: var(--f-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.progress {
+    position: relative;
+    height: 4px;
+    margin-top: 0.75rem;
+    border-radius: 999px;
+    background: var(--f-line);
+    overflow: hidden;
+}
+
+.progress-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 0;
+    border-radius: inherit;
+    background: #fff;
+    transition: width 0.45s var(--f-ease);
+}
+
+.steps {
+    margin-top: 2.25rem;
+}
+
+.alert {
+    display: flex;
+    gap: 0.75rem;
+    padding: 1rem 1.125rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgb(248 113 113 / 0.4);
+    border-radius: 1rem;
+    background: rgb(248 113 113 / 0.08);
+    color: #fecaca;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+}
+
+.alert a {
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* ---------- Steps ---------- */
+
+.step {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+}
+
+/* No JS: one long form, questions separated by rules. */
+.funnel:not(.is-enhanced) .step + .step {
+    margin-top: 3rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--f-line);
+}
+
+.funnel.is-enhanced .step {
+    display: none;
+}
+
+.funnel.is-enhanced .step.is-active {
+    display: block;
+    animation: step-in 0.34s var(--f-ease) both;
+}
+
+.funnel.is-enhanced[data-dir="back"] .step.is-active {
+    animation-name: step-in-back;
+}
+
+@keyframes step-in {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+}
+
+@keyframes step-in-back {
+    from {
+        opacity: 0;
+        transform: translateY(-12px);
+    }
+}
+
+.step legend {
+    float: left;
+    width: 100%;
+    padding: 0;
+}
+
+.step legend + * {
+    clear: both;
+}
+
+.q-count {
+    font-size: 0.8125rem;
+    color: var(--f-muted);
+    margin-bottom: 0.625rem;
+}
+
+.q-title {
+    font-size: clamp(1.5rem, 1.15rem + 1.5vw, 2rem);
+    line-height: 1.18;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+}
+
+.q-title:focus {
+    outline: none;
+}
+
+.q-sub {
+    margin-top: 0.625rem;
+    color: var(--f-muted);
+    line-height: 1.55;
+}
+
+.q-body {
+    padding-top: 1.75rem;
+}
+
+/* ---------- Option cards ---------- */
+
+.options {
+    display: grid;
+    gap: 0.625rem;
+}
+
+@media (min-width: 480px) {
+    .options.cols-2 {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.opt {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    min-height: 3.5rem;
+    padding: 0.75rem 0.875rem 0.75rem 1rem;
+    border: 1px solid var(--f-line-strong);
+    border-radius: 1rem;
+    background: var(--f-panel);
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: border-color 0.15s, background-color 0.15s, transform 0.12s var(--f-ease);
+}
+
+/* Touch screens keep :hover after a tap, which reads as a second selection. */
+@media (hover: hover) {
+    .opt:hover {
+        border-color: var(--f-line-hover);
+        background: var(--f-panel-hover);
+    }
+}
+
+.opt:active {
+    transform: scale(0.985);
+}
+
+.opt:has(input:checked) {
+    border-color: #fff;
+    background: var(--f-panel-active);
+}
+
+.opt:has(input:focus-visible) {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+}
+
+/* The real input stays in the page for keyboards and screen readers. */
+.opt input,
+.chip input,
+.consent input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    pointer-events: none;
+}
+
+.opt-icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.75rem;
+    background: rgb(255 255 255 / 0.06);
+    color: var(--f-soft);
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.opt:has(input:checked) .opt-icon {
+    background: #fff;
+    color: var(--f-bg);
+}
+
+.opt-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.opt-label {
+    display: block;
+    font-weight: 500;
+    line-height: 1.3;
+}
+
+.opt-hint {
+    display: block;
+    margin-top: 0.125rem;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: var(--f-muted);
+}
+
+.opt-key {
+    display: none;
+    flex: none;
+    place-items: center;
+    min-width: 1.5rem;
+    height: 1.5rem;
+    padding: 0 0.25rem;
+    border: 1px solid var(--f-line-strong);
+    border-radius: 0.375rem;
+    font: 500 0.75rem/1 inherit;
+    color: var(--f-muted);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .funnel.is-enhanced .opt-key {
+        display: grid;
+    }
+}
+
+.opt-mark {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 1.375rem;
+    height: 1.375rem;
+    border: 1.5px solid var(--f-line-hover);
+    border-radius: 999px;
+    color: transparent;
+    transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.opt-mark.square {
+    border-radius: 0.4rem;
+}
+
+.opt:has(input:checked) .opt-mark,
+.consent:has(input:checked) .opt-mark {
+    border-color: #fff;
+    background: #fff;
+    color: var(--f-bg);
+}
+
+/* "Other" text boxes appear once "Other" is ticked, with or without JS. */
+.other-field {
+    display: none;
+    margin-top: 0.75rem;
+}
+
+.step:has(input[data-other]:checked) .other-field {
+    display: block;
+    animation: step-in 0.25s var(--f-ease) both;
+}
+
+.q-note {
+    display: flex;
+    gap: 0.625rem;
+    align-items: flex-start;
+    margin-top: 1.25rem;
+    font-size: 0.9375rem;
+    color: var(--f-soft);
+}
+
+.q-note svg {
+    flex: none;
+    margin-top: 0.15rem;
+    color: #4ade80;
+}
+
+/* ---------- Text fields ---------- */
+
+.fields {
+    display: grid;
+    gap: 1.25rem;
+}
+
+.field-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--f-soft);
+}
+
+.field-label .optional {
+    font-weight: 400;
+    color: var(--f-muted);
+}
+
+.input {
+    display: block;
+    width: 100%;
+    height: 3.25rem;
+    padding: 0 1rem;
+    border: 1px solid var(--f-line-strong);
+    border-radius: 0.875rem;
+    background: rgb(255 255 255 / 0.03);
+    color: #fff;
+    /* 16px or more stops iOS zooming in on focus. */
+    font: inherit;
+    font-size: 1rem;
+    transition: border-color 0.15s, background-color 0.15s;
+}
+
+.input::placeholder {
+    color: #71717a;
+}
+
+.input:hover {
+    border-color: var(--f-line-hover);
+}
+
+.input:focus {
+    border-color: #fff;
+    background: rgb(255 255 255 / 0.05);
+}
+
+.funnel .input:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+.input[aria-invalid="true"] {
+    border-color: var(--f-danger-line);
+}
+
+.field-hint {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--f-muted);
+    line-height: 1.5;
+}
+
+.field-error {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.625rem;
+    font-size: 0.9375rem;
+    color: var(--f-danger);
+}
+
+.field-error.group-error {
+    margin: 0 0 0.875rem;
+}
+
+/* ---------- Chips (preferred contact) ---------- */
+
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+}
+
+.chip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0 1.125rem;
+    border: 1px solid var(--f-line-strong);
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 0.9375rem;
+    color: var(--f-soft);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: border-color 0.15s, background-color 0.15s, color 0.15s;
+}
+
+@media (hover: hover) {
+    .chip:hover {
+        border-color: var(--f-line-hover);
+    }
+}
+
+.chip:has(input:checked) {
+    border-color: #fff;
+    background: #fff;
+    color: var(--f-bg);
+    font-weight: 500;
+}
+
+.chip:has(input:focus-visible) {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+}
+
+/* ---------- Consent ---------- */
+
+.consent {
+    position: relative;
+    display: flex;
+    gap: 0.875rem;
+    align-items: flex-start;
+    padding: 1rem;
+    border: 1px solid var(--f-line-strong);
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: border-color 0.15s;
+}
+
+.consent:hover {
+    border-color: var(--f-line-hover);
+}
+
+.consent:has(input:focus-visible) {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+}
+
+.consent:has(input[aria-invalid="true"]) {
+    border-color: var(--f-danger-line);
+}
+
+.consent .opt-mark {
+    margin-top: 0.1rem;
+}
+
+.consent-text {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--f-soft);
+}
+
+.privacy {
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
+    color: var(--f-muted);
+}
+
+.privacy summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    min-height: 2.75rem;
+    cursor: pointer;
+    color: var(--f-soft);
+    text-decoration: underline;
+    text-decoration-color: var(--f-line-hover);
+    text-underline-offset: 3px;
+    list-style: none;
+}
+
+.privacy summary::-webkit-details-marker {
+    display: none;
+}
+
+.privacy summary:hover {
+    color: #fff;
+}
+
+.privacy-body {
+    display: grid;
+    gap: 0.625rem;
+    padding: 0.25rem 0 0.5rem;
+    line-height: 1.6;
+}
+
+.privacy-body a {
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 3.25rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    font: inherit;
+    font-weight: 500;
+    line-height: 1.25;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color 0.15s, border-color 0.15s, color 0.15s, transform 0.12s var(--f-ease);
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn-primary {
+    background: #fff;
+    color: var(--f-bg);
+}
+
+.btn-primary:hover {
+    background: #e4e4e7;
+}
+
+.btn-secondary {
+    border-color: var(--f-line-strong);
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    border-color: var(--f-line-hover);
+    background: var(--f-panel-hover);
+}
+
+.btn-ghost {
+    min-height: 2.75rem;
+    padding: 0 0.75rem 0 0.5rem;
+    margin-left: -0.5rem;
+    color: var(--f-muted);
+}
+
+.btn-ghost:hover {
+    color: #fff;
+}
+
+.btn-ghost[aria-disabled="true"] {
+    visibility: hidden;
+}
+
+.btn-arrow {
+    transition: transform 0.2s var(--f-ease);
+}
+
+.btn:hover .btn-arrow {
+    transform: translateX(3px);
+}
+
+.btn[aria-busy="true"] {
+    cursor: progress;
+    opacity: 0.8;
+}
+
+.spinner {
+    display: none;
+    animation: spin 0.8s linear infinite;
+}
+
+.btn[aria-busy="true"] .spinner {
+    display: block;
+}
+
+.btn[aria-busy="true"] .btn-arrow {
+    display: none;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.step-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.25rem;
+    margin-top: 2rem;
+}
+
+.enter-hint {
+    display: none;
+    font-size: 0.8125rem;
+    color: var(--f-muted);
+}
+
+.enter-hint kbd {
+    font: inherit;
+    font-weight: 500;
+    color: var(--f-soft);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .enter-hint {
+        display: inline;
+    }
+}
+
+@media (max-width: 639.98px) {
+    .step-actions .btn-primary,
+    .pitch-start .btn-primary,
+    .thanks-buttons .btn {
+        width: 100%;
+    }
+
+    .thanks-buttons .btn-arrow {
+        display: none;
+    }
+}
+
+.fine-print {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: var(--f-muted);
+}
+
+/* The honeypot. Off-screen, not display:none, since some bots skip hidden fields. */
+.hp {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+/* ---------- Thank-you ---------- */
+
+.thanks {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.thanks-badge {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--f-bg);
+    margin-bottom: 1.75rem;
+    animation: pop 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.3) both;
+}
+
+.thanks-greeting {
+    color: var(--f-muted);
+    margin-bottom: 0.5rem;
+}
+
+.thanks-title {
+    font-size: clamp(1.875rem, 1.3rem + 2.4vw, 2.75rem);
+    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+    max-width: 20ch;
+}
+
+.thanks-title:focus {
+    outline: none;
+}
+
+.thanks-cta {
+    margin-top: 2.25rem;
+    width: 100%;
+}
+
+.thanks-lead {
+    color: var(--f-soft);
+    margin-bottom: 1rem;
+}
+
+.thanks-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.thanks-reply {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.625rem;
+    margin-top: 1.125rem;
+    font-size: 0.875rem;
+    color: var(--f-muted);
+}
+
+.thanks-reply a {
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.thanks-next {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--f-line);
+    width: 100%;
+}
+
+.thanks-next-title {
+    font-size: 0.875rem;
+    color: var(--f-muted);
+    margin-bottom: 1.25rem;
+}
+
+.thanks-next ol {
+    display: grid;
+    gap: 1.25rem;
+}
+
+.thanks-next li {
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    gap: 1rem;
+}
+
+.thanks-back {
+    margin-top: 2.5rem;
+    font-size: 0.9375rem;
+    color: var(--f-muted);
+}
+
+.thanks-back a {
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+@keyframes pop {
+    from {
+        transform: scale(0.6);
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .funnel *,
+    .funnel *::before,
+    .funnel *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}

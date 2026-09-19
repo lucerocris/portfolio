@@ -1,0 +1,27 @@
+---
+/**
+ * Where the /start form lands when it was sent without JS. With JS, the same
+ * thank-you screen shows in place on /start.
+ */
+import "../../styles/funnel.css";
+import Layout from "../../layouts/Layout.astro";
+import FunnelThanks from "../../components/FunnelThanks.astro";
+---
+
+<Layout
+        title="Got it. Your audit is on its way | Cris Lucero"
+        description="Thanks for requesting a free Direct Bookings & Inquiry Audit."
+        ogImage="/og-start.png"
+        bodyClass="bg-[#151419] min-h-screen w-full text-white font-['Onest','Onest_Variable',ui-sans-serif,system-ui,sans-serif]"
+>
+    <div class="funnel" data-view="done">
+        <div class="funnel-shell">
+            <section class="quiz">
+                <div class="quiz-card">
+                    <FunnelThanks/>
+                </div>
+                <p class="thanks-back">In the meantime, <a href="/projects">see some of my work</a>.</p>
+            </section>
+        </div>
+    </div>
+</Layout>
