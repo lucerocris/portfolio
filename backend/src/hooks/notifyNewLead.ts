@@ -52,8 +52,9 @@ export const parseNotifyUrl = (raw: string | undefined): Target | null => {
   const local = url.hostname === 'localhost' || url.hostname === '127.0.0.1'
   if (url.protocol !== 'https:' && !(local && url.protocol === 'http:')) return null
 
-  if (DISCORD_HOSTS.has(url.hostname) && url.pathname.startsWith('/api/webhooks/')) {
-    return { kind: 'discord', url }
+  if (DISCORD_HOSTS.has(url.hostname)) {
+    // Any other Discord URL is a copy-paste mistake, not an ntfy server.
+    return url.pathname.startsWith('/api/webhooks/') ? { kind: 'discord', url } : null
   }
   return { kind: 'ntfy', url }
 }
