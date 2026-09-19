@@ -7,24 +7,19 @@ import {site} from "../lib/site";
 // No per-request data, so this page is built once and served from the CDN.
 export const prerender = true;
 
+// Written for business owners: outcomes first, no jargon.
 const services = [
     {
-        title: "Build it end to end",
-        body:
-            "Database, API, interface and admin, delivered by one person. You get a working product rather " +
-            "than pieces to assemble.",
+        title: "A website that brings in customers",
+        body: "Fast, clear and easy to find on Google, so visitors turn into inquiries instead of leaving.",
     },
     {
-        title: "Web, mobile and commerce",
-        body:
-            "Marketing sites, web applications, mobile apps and online stores — whatever shape the product " +
-            "needs to take to reach your customers.",
+        title: "Booking, ordering and payments online",
+        body: "Customers book, order and pay any time, without the back-and-forth in Messenger.",
     },
     {
-        title: "Built to run day to day",
-        body:
-            "Admin tools, dashboards and reporting, so your team can manage the product themselves without " +
-            "a developer for every change.",
+        title: "Tools that save your team time",
+        body: "Simple dashboards for bookings, customers and content, so you can update things yourself.",
     },
 ];
 
@@ -53,7 +48,7 @@ const highlights = ["TypeScript", "Next.js", "React", "Flutter", "Supabase", "Po
 
 <Layout
         title="About | Cris Lucero"
-        description="Cris Lucero is a web and app developer based in Cebu, Philippines, building web, mobile and commerce products end to end — from database schema to shipped interface."
+        description="Cris Lucero is a web and app developer in Cebu, Philippines, helping businesses get more customers with websites, online booking and simple tools to run it all."
 >
 
 
@@ -68,31 +63,26 @@ const highlights = ["TypeScript", "Next.js", "React", "Flutter", "Supabase", "Po
             </div>
 
             <div class="flex flex-col gap-3">
-                <h1 class="text-3xl font-bold md:text-5xl">About</h1>
+                <h1 class="text-3xl font-bold md:text-5xl">Hi, I'm Cris.</h1>
                 <p class="flex items-center gap-2 text-sm text-zinc-400">
                     <MapPin size={16} aria-hidden="true"/>
                     Based in {site.location}
                 </p>
             </div>
 
-            <div class="flex max-w-2xl flex-col gap-4 text-zinc-400">
-                <p>
-                    I'm Cris Lucero. I build the software businesses run on — the product customers use and the
-                    back office that keeps it working — and I take it from empty repository to live.
+            <div class="flex max-w-2xl flex-col gap-4 text-zinc-400 md:text-lg">
+                <p class="text-zinc-300">
+                    I help businesses get more customers and spend less time on busywork.
                 </p>
                 <p>
-                    That means one person accountable for the whole thing, rather than coordinating separate
-                    specialists and owning the gaps between them.
+                    I build your website, online booking and the tools to manage it all. You work with me directly,
+                    from the first call to launch and after, with no hand-offs and no tech jargon.
                 </p>
                 <p>
-                    An event platform that handled 600 registrations and ran check-in on the night. A tournament
-                    system carried to production and maintained since. A cafe platform where owners manage their
-                    own listing, menu and photos, and see how customers are finding them.
+                    I've built an event platform that handled 600 registrations in one night, run the tournament and
+                    payment system for PickleRank PH, and launched Nook, a café app on the App Store.
                 </p>
-                <p>
-                    I'm also studying BS Computer Science at the University of San Carlos, where I was a Dean's
-                    Lister in my first year.
-                </p>
+                <p class="text-sm">Computer Science at the University of San Carlos · Dean's Lister</p>
             </div>
 
             <div class="flex flex-wrap items-center gap-x-8 gap-y-4">
@@ -121,7 +111,7 @@ const highlights = ["TypeScript", "Next.js", "React", "Flutter", "Supabase", "Po
         {/* Value */}
         <section class="flex flex-col gap-6">
             <h2 class="border-b border-zinc-500 pb-3 text-sm tracking-wide text-zinc-400 uppercase">
-                How I help
+                What I can do for you
             </h2>
 
             <div class="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8">
@@ -137,7 +127,7 @@ const highlights = ["TypeScript", "Next.js", "React", "Flutter", "Supabase", "Po
         {/* Stack */}
         <section class="flex flex-col gap-6">
             <h2 class="border-b border-zinc-500 pb-3 text-sm tracking-wide text-zinc-400 uppercase">
-                What I work with
+                Tools I use
             </h2>
 
             <ul class="flex flex-wrap gap-2" aria-label="Main tools">

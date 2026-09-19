@@ -3,7 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import CtaButton from "../components/CtaButton.astro";
 import SocialLinks from "../components/SocialLinks.astro";
 import TestimonialStrip from "../components/TestimonialStrip.astro";
-import {ArrowRight} from "@lucide/astro";
+import {ArrowRight, CalendarCheck, LayoutDashboard, Search} from "@lucide/astro";
 import {site, startingPriceText} from "../lib/site";
 
 // Static page: the hero has no CMS data. Testimonials load through a server
@@ -11,6 +11,13 @@ import {site, startingPriceText} from "../lib/site";
 export const prerender = true;
 
 const priceText = startingPriceText();
+
+// What a business owner gets, readable in one glance under the hero.
+const value = [
+    {icon: Search, title: "Get found", body: "A fast website that looks great on phones and shows up on Google."},
+    {icon: CalendarCheck, title: "Get booked", body: "Customers book, order and pay online, any time of day."},
+    {icon: LayoutDashboard, title: "Save time", body: "Every inquiry and booking in one place, easy for your team to manage."},
+];
 ---
 <Layout
         title={`${site.name} — Web & App Developer in Cebu`}
@@ -32,10 +39,9 @@ const priceText = startingPriceText();
                     Websites and systems that help businesses get more customers.
                 </h1>
 
-                <p class="max-w-2xl text-zinc-400 md:text-lg">
-                    I build the website or app your customers use, and the admin tools your team runs it with —
-                    one person accountable from first call to launch. Recent work: a café app live on the App
-                    Store, the ranking platform for PickleRank PH, and an e-commerce build for an Australian brand.
+                <p class="max-w-2xl text-lg text-zinc-300 md:text-xl">
+                    I build your website, online booking and the tools to run it, so customers can find you,
+                    book you and pay you without the back-and-forth.
                 </p>
             </div>
 
@@ -54,6 +60,23 @@ const priceText = startingPriceText();
                 </div>
                 {priceText && <p class="text-sm text-zinc-400">{priceText}</p>}
             </div>
+
+            <ul class="grid max-w-5xl grid-cols-1 gap-6 border-t border-zinc-800 pt-8 sm:grid-cols-3 sm:gap-8"
+                aria-label="What you get">
+                {value.map(({icon: Icon, title, body}) => (
+                        <li class="flex flex-col gap-2">
+                            <Icon class="h-5 w-5 text-white" aria-hidden="true"/>
+                            <p class="font-medium text-white">{title}</p>
+                            <p class="text-sm text-zinc-400">{body}</p>
+                        </li>
+                ))}
+            </ul>
+
+            <p class="text-sm text-zinc-400">
+                Recent work: <a href="/projects/nook" class="text-zinc-300 underline-offset-4 hover:text-white hover:underline">Nook</a>, a café app on the App Store
+                · <a href="/projects/picklerank" class="text-zinc-300 underline-offset-4 hover:text-white hover:underline">PickleRank PH</a>, tournaments and online payments
+                · <a href="/projects/nap-atlas" class="text-zinc-300 underline-offset-4 hover:text-white hover:underline">Nap Atlas</a>, an online store for an Australian brand
+            </p>
 
             <SocialLinks/>
         </section>
