@@ -1,6 +1,11 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import {ArrowRight, Github, Instagram, Facebook, Linkedin} from "@lucide/astro";
+import WorkWithMe from "../components/WorkWithMe.astro";
+import {ArrowRight, ChevronDown, Download, MapPin} from "@lucide/astro";
+import {site} from "../lib/site";
+
+// No per-request data, so this page is built once and served from the CDN.
+export const prerender = true;
 
 const services = [
     {
@@ -42,21 +47,17 @@ const stack = [
     },
 ];
 
-const socials = [
-    {href: "https://github.com/lucerocris", label: "GitHub", Icon: Github},
-    {href: "https://www.linkedin.com/in/cris-lawrence-lucero-29639433b/", label: "LinkedIn", Icon: Linkedin},
-    {href: "https://www.instagram.com/crislucero22/", label: "Instagram", Icon: Instagram},
-    {href: "https://www.facebook.com/crislawrence.lucero", label: "Facebook", Icon: Facebook},
-];
+// The headline tools, shown up front; the full list sits behind a toggle.
+const highlights = ["TypeScript", "Next.js", "React", "Flutter", "Supabase", "PostgreSQL", "PHP", "Shopify"];
 ---
 
 <Layout
         title="About | Cris Lucero"
-        description="Cris Lucero — software developer building web, mobile and commerce products end to end, from database schema to shipped interface."
+        description="Cris Lucero is a web and app developer based in Cebu, Philippines, building web, mobile and commerce products end to end — from database schema to shipped interface."
 >
 
 
-<div class="mx-auto h-full max-w-7xl px-6 py-20 md:px-12 md:py-40">
+<div class="mx-auto max-w-7xl px-6 py-20 md:px-12 md:py-40">
 
     <div class="flex flex-col gap-16 md:gap-24">
 
@@ -66,7 +67,13 @@ const socials = [
                 <img src="/avatar.webp" alt="Portrait of Cris Lucero" width="72" height="72" class="h-full w-full rounded-full object-cover">
             </div>
 
-            <h1 class="text-3xl font-bold md:text-5xl">About</h1>
+            <div class="flex flex-col gap-3">
+                <h1 class="text-3xl font-bold md:text-5xl">About</h1>
+                <p class="flex items-center gap-2 text-sm text-zinc-400">
+                    <MapPin size={16} aria-hidden="true"/>
+                    Based in {site.location}
+                </p>
+            </div>
 
             <div class="flex max-w-2xl flex-col gap-4 text-zinc-400">
                 <p>
@@ -82,17 +89,33 @@ const socials = [
                     system carried to production and maintained since. A cafe platform where owners manage their
                     own listing, menu and photos, and see how customers are finding them.
                 </p>
+                <p>
+                    I'm also studying BS Computer Science at the University of San Carlos, where I was a Dean's
+                    Lister in my first year.
+                </p>
             </div>
 
-            <a href="/projects" class="group w-fit">
-                <div class="flex items-center gap-2">
-                    <p class="border-b border-transparent font-medium text-white transition-colors duration-300 group-hover:border-white">
-                        See the work
-                    </p>
-                    <ArrowRight
-                            class="h-5 w-5 text-white transition-transform duration-300 group-hover:translate-x-1"/>
-                </div>
-            </a>
+            <div class="flex flex-wrap items-center gap-x-8 gap-y-4">
+                <a href="/projects" class="group w-fit">
+                    <div class="flex items-center gap-2">
+                        <p class="border-b border-transparent font-medium text-white transition-colors duration-300 group-hover:border-white">
+                            See the work
+                        </p>
+                        <ArrowRight
+                                class="h-5 w-5 text-white transition-transform duration-300 group-hover:translate-x-1"/>
+                    </div>
+                </a>
+                {site.cvPath && (
+                        <a href={site.cvPath} download class="group w-fit">
+                            <div class="flex items-center gap-2">
+                                <Download class="h-5 w-5 text-zinc-300" aria-hidden="true"/>
+                                <p class="border-b border-transparent text-zinc-300 transition-colors duration-300 group-hover:border-zinc-300">
+                                    Download CV (PDF)
+                                </p>
+                            </div>
+                        </a>
+                )}
+            </div>
         </section>
 
         {/* Value */}
@@ -117,43 +140,37 @@ const socials = [
                 What I work with
             </h2>
 
-            <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-                {stack.map((group) => (
-                        <div class="flex flex-col gap-3">
-                            <h3 class="text-sm text-zinc-400">{group.label}</h3>
-                            <ul class="flex flex-wrap gap-2">
-                                {group.items.map((item) => (
-                                        <li class="rounded-full border border-zinc-700 px-3 py-1 text-sm text-zinc-300">
-                                            {item}
-                                        </li>
-                                ))}
-                            </ul>
-                        </div>
+            <ul class="flex flex-wrap gap-2" aria-label="Main tools">
+                {highlights.map((item) => (
+                        <li class="rounded-full border border-zinc-700 px-3 py-1 text-sm text-zinc-300">{item}</li>
                 ))}
-            </div>
-        </section>
+            </ul>
 
-        {/* Contact */}
-        <section class="flex flex-col gap-6">
-            <h2 class="border-b border-zinc-500 pb-3 text-sm tracking-wide text-zinc-400 uppercase">
-                Elsewhere
-            </h2>
-
-            <div class="flex flex-col gap-6">
-                <p class="max-w-2xl text-zinc-400">
-                    If you have a product to build, or one that needs taking further, I'd like to hear about it.
-                    LinkedIn is the fastest way to reach me.
-                </p>
-
-                <div class="flex gap-4">
-                    {socials.map(({href, label, Icon}) => (
-                            <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label} title={label}>
-                                <Icon class="text-zinc-400 transition-colors hover:text-white"/>
-                            </a>
-                    ))}
+            <details class="group">
+                <summary class="flex w-fit cursor-pointer list-none items-center gap-2 text-sm text-zinc-300 transition-colors hover:text-white [&::-webkit-details-marker]:hidden">
+                    <span class="border-b border-transparent group-hover:border-zinc-300">Full stack</span>
+                    <ChevronDown size={16} class="transition-transform group-open:rotate-180" aria-hidden="true"/>
+                </summary>
+                <div class="pt-6">
+                    <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                        {stack.map((group) => (
+                                <div class="flex flex-col gap-3">
+                                    <h3 class="text-sm text-zinc-400">{group.label}</h3>
+                                    <ul class="flex flex-wrap gap-2">
+                                        {group.items.map((item) => (
+                                                <li class="rounded-full border border-zinc-700 px-3 py-1 text-sm text-zinc-300">
+                                                    {item}
+                                                </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                        ))}
+                    </div>
                 </div>
-            </div>
+            </details>
         </section>
+
+        <WorkWithMe/>
     </div>
 </div>
 
