@@ -6,6 +6,8 @@
  */
 import "../styles/global.css";
 import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import {site} from "../lib/site";
 // Preload the Latin subset of the self-hosted font so text renders in Onest
 // on first paint instead of swapping.
 import onestLatin from "@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url";
@@ -25,7 +27,7 @@ const {
     description,
     ogImage = "/profile.webp",
     ogType = "website",
-    bodyClass = "bg-[#151419] min-h-screen w-screen text-white",
+    bodyClass = "bg-[#151419] min-h-screen w-full text-white",
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -44,7 +46,7 @@ const ogImageUrl = ogImage.startsWith("http") ? ogImage : new URL(ogImage, Astro
     <meta name="description" content={description}>
 
     <meta property="og:type" content={ogType}>
-    <meta property="og:site_name" content="Cris Lucero">
+    <meta property="og:site_name" content={site.name}>
     <meta property="og:title" content={title}>
     <meta property="og:description" content={description}>
     <meta property="og:url" content={canonical}>
@@ -59,6 +61,9 @@ const ogImageUrl = ogImage.startsWith("http") ? ogImage : new URL(ogImage, Astro
 </head>
 <body class={bodyClass}>
 <Nav/>
-<slot/>
+<main>
+    <slot/>
+</main>
+<Footer/>
 </body>
 </html>

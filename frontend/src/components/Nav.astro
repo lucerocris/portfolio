@@ -4,6 +4,9 @@
  * anywhere and /about was orphaned — reachable by URL and indexable, but
  * unlinked from the site itself.
  */
+import CtaButton from "./CtaButton.astro";
+import {primaryCta} from "../lib/site";
+
 const path = Astro.url.pathname;
 
 const links = [
@@ -15,14 +18,14 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
 ---
 
 <header class="mx-auto w-full max-w-7xl px-6 pt-8 md:px-12 md:pt-10">
-    <nav class="flex items-center justify-between" aria-label="Main">
+    <nav class="flex items-center justify-between gap-4" aria-label="Main">
         <a href="/"
-           class="text-sm font-medium text-white transition-opacity hover:opacity-70"
+           class="text-sm font-medium whitespace-nowrap text-white transition-opacity hover:opacity-70"
            aria-current={path === "/" ? "page" : undefined}>
             Cris Lucero
         </a>
 
-        <ul class="flex items-center gap-6">
+        <ul class="flex items-center gap-4 sm:gap-6">
             {links.map(({href, label}) => (
                     <li>
                         <a
@@ -30,13 +33,18 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
                                 aria-current={isActive(href) ? "page" : undefined}
                                 class:list={[
                                     "text-sm transition-colors",
-                                    isActive(href) ? "text-white" : "text-zinc-500 hover:text-white",
+                                    isActive(href) ? "text-white" : "text-zinc-400 hover:text-white",
                                 ]}
                         >
                             {label}
                         </a>
                     </li>
             ))}
+            {primaryCta() && (
+                    <li>
+                        <CtaButton size="sm" compactLabel="Book a call"/>
+                    </li>
+            )}
         </ul>
     </nav>
 </header>

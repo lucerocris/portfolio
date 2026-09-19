@@ -1,0 +1,59 @@
+---
+/**
+ * "Work with me" block for the end of case studies and the About page.
+ * Every contact route comes from src/lib/site.ts and only renders when set;
+ * with nothing set it falls back to the social links.
+ */
+import {Mail, MessageCircle} from "@lucide/astro";
+import CtaButton from "./CtaButton.astro";
+import SocialLinks from "./SocialLinks.astro";
+import {contactMethods, primaryCta, site} from "../lib/site";
+
+interface Props {
+    heading?: string;
+    body?: string;
+}
+
+const {
+    heading = "Work with me",
+    body = `I build websites, apps and online stores for businesses in ${site.location} and beyond. Tell me what you need and I'll tell you honestly whether I can help.`,
+} = Astro.props;
+
+const cta = primaryCta();
+// The primary CTA already covers one route; list the others underneath.
+const others = contactMethods().filter((m) => m.kind !== "booking" && m.href !== cta?.href);
+---
+
+<section class="flex flex-col gap-6 rounded-2xl border border-zinc-800 bg-white/[0.02] p-6 md:p-10" aria-labelledby="work-with-me">
+    <div class="flex flex-col gap-3">
+        <h2 id="work-with-me" class="text-2xl font-semibold text-white md:text-3xl">{heading}</h2>
+        <p class="max-w-2xl text-zinc-400">{body}</p>
+    </div>
+
+    {cta ? (
+            <div class="flex flex-col gap-4">
+                <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+                    <CtaButton/>
+                    <p class="text-sm text-zinc-400">I reply {site.replyTime}.</p>
+                </div>
+
+                {others.length > 0 && (
+                        <ul class="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+                            {others.map((m) => (
+                                    <li>
+                                        <a href={m.href}
+                                           {...(m.external ? {target: "_blank", rel: "noopener noreferrer"} : {})}
+                                           class="inline-flex items-center gap-2 text-zinc-300 underline-offset-4 transition-colors hover:text-white hover:underline">
+                                            {m.kind === "messenger" && <MessageCircle size={16} aria-hidden="true"/>}
+                                            {m.kind === "email" && <Mail size={16} aria-hidden="true"/>}
+                                            {m.label}
+                                        </a>
+                                    </li>
+                            ))}
+                        </ul>
+                )}
+            </div>
+    ) : (
+            <SocialLinks/>
+    )}
+</section>
