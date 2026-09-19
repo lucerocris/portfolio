@@ -70,6 +70,7 @@ export interface Config {
     users: User;
     media: Media;
     projects: Project;
+    leads: Lead;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -80,6 +81,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
+    leads: LeadsSelect<false> | LeadsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -149,7 +151,6 @@ export interface User {
 export interface Media {
   id: string;
   alt: string;
-  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -245,6 +246,51 @@ export interface Project {
   createdAt: string;
 }
 /**
+ * Audit requests from /start. Send the audit, then move the status along and log each follow-up. Sort by "Next follow-up" to see who is due.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leads".
+ */
+export interface Lead {
+  id: string;
+  status: 'new' | 'audit-sent' | 'contacted' | 'call-booked' | 'proposal' | 'won' | 'lost';
+  /**
+   * Starts at the 48-hour audit deadline. Cleared when a lead is won or lost.
+   */
+  nextFollowUp?: string | null;
+  /**
+   * Aim for 7 before giving up on a stage.
+   */
+  followups?: number | null;
+  consent: boolean;
+  consentAt?: string | null;
+  businessName: string;
+  link?: string | null;
+  contactName: string;
+  contactHandle: string;
+  email?: string | null;
+  preferredContact: 'messenger' | 'call-text' | 'viber' | 'whatsapp' | 'email';
+  /**
+   * Call notes, audit findings, what they said, what to send next.
+   */
+  notes?: string | null;
+  businessType: 'resort' | 'hotel' | 'events' | 'other';
+  businessTypeOther?: string | null;
+  painPoints: ('messenger' | 'website' | 'ota' | 'manual' | 'payments' | 'other')[];
+  painOther?: string | null;
+  inquiryVolume: 'lt10' | '10-30' | '30-100' | '100plus';
+  teamSize: 'solo' | '2-5' | '6-20' | '20plus';
+  budget: 'unsure' | 'lt50k' | '50-100k' | '100-200k' | '200kplus';
+  timeline: 'asap' | '1-3m' | 'exploring';
+  utmSource?: string | null;
+  utmMedium?: string | null;
+  utmCampaign?: string | null;
+  referrer?: string | null;
+  landingPage?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -279,6 +325,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'projects';
         value: string | Project;
+      } | null)
+    | ({
+        relationTo: 'leads';
+        value: string | Lead;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -350,7 +400,6 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
-  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -421,6 +470,39 @@ export interface ProjectsSelect<T extends boolean = true> {
         wide?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leads_select".
+ */
+export interface LeadsSelect<T extends boolean = true> {
+  status?: T;
+  nextFollowUp?: T;
+  followups?: T;
+  consent?: T;
+  consentAt?: T;
+  businessName?: T;
+  link?: T;
+  contactName?: T;
+  contactHandle?: T;
+  email?: T;
+  preferredContact?: T;
+  notes?: T;
+  businessType?: T;
+  businessTypeOther?: T;
+  painPoints?: T;
+  painOther?: T;
+  inquiryVolume?: T;
+  teamSize?: T;
+  budget?: T;
+  timeline?: T;
+  utmSource?: T;
+  utmMedium?: T;
+  utmCampaign?: T;
+  referrer?: T;
+  landingPage?: T;
   updatedAt?: T;
   createdAt?: T;
 }
