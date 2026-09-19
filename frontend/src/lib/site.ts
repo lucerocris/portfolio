@@ -47,8 +47,6 @@ export const site = {
 export type Cta = {
   href: string
   label: string
-  /** What happens on click, for the line under the button. */
-  hint: string
   external: boolean
 }
 
@@ -64,13 +62,13 @@ export const primaryCta = (): Cta | null => {
   const email = clean(site.email)
 
   if (bookingUrl) {
-    return { href: bookingUrl, label: 'Book a free call', hint: 'Pick a time that suits you', external: true }
+    return { href: bookingUrl, label: 'Book a free call', external: true }
   }
   if (messengerUrl) {
-    return { href: messengerUrl, label: 'Book a free call', hint: 'Message me on Messenger', external: true }
+    return { href: messengerUrl, label: 'Book a free call', external: true }
   }
   if (email) {
-    return { href: `mailto:${email}`, label: 'Book a free call', hint: `Email ${email}`, external: false }
+    return { href: `mailto:${email}`, label: 'Book a free call', external: false }
   }
   return null
 }

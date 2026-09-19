@@ -18,14 +18,14 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
 ---
 
 <header class="mx-auto w-full max-w-7xl px-6 pt-8 md:px-12 md:pt-10">
-    <nav class="flex items-center justify-between gap-4" aria-label="Main">
+    <nav class="flex items-center justify-between gap-2" aria-label="Main">
         <a href="/"
            class="text-sm font-medium whitespace-nowrap text-white transition-opacity hover:opacity-70"
            aria-current={path === "/" ? "page" : undefined}>
             Cris Lucero
         </a>
 
-        <ul class="flex items-center gap-4 sm:gap-6">
+        <ul class="flex items-center gap-3 sm:gap-6">
             {links.map(({href, label}) => (
                     <li>
                         <a

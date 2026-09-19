@@ -22,7 +22,7 @@ const cta = primaryCta();
             {...(cta.external ? {target: "_blank", rel: "noopener noreferrer"} : {})}
             class:list={[
                 "inline-flex w-fit items-center justify-center rounded-full bg-white font-medium whitespace-nowrap text-[#151419] transition-colors hover:bg-zinc-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white",
-                size === "sm" ? "px-4 py-1.5 text-sm" : "px-6 py-3",
+                size === "sm" ? "px-3 py-1.5 text-sm sm:px-4" : "px-6 py-3",
                 className,
             ]}
     >
