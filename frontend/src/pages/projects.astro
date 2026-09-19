@@ -13,12 +13,15 @@ if (result.ok) {
 
 // The image column is half the 1280px container (minus padding and gap) on
 // desktop and full width below lg.
+const imageUrls = projects.map((p) => sizedUrl(asMedia(p.featuredImage), 900));
+
 const FEATURED_SIZES =
     "(min-width: 1280px) 572px, (min-width: 1024px) calc(50vw - 68px), (min-width: 768px) calc(100vw - 96px), calc(100vw - 48px)";
 ---
 
 <Layout
         title="Projects | Cris Lucero"
+        imageUrls={imageUrls}
         description="Selected work by Cris Lucero, a web and app developer in Cebu, Philippines — a cafe discovery app, a pickleball tournament system, an event platform, a commerce storefront and a D2C travel brand."
 >
 
