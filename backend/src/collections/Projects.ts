@@ -52,6 +52,71 @@ export const Projects: CollectionConfig = {
             name: 'liveLink',
             type: 'text',
             label: 'Live Website URL',
+            admin: {
+                description: 'Legacy single link. Prefer "Links" below; this still renders if Links is empty.',
+            },
+        },
+        {
+            name: 'order',
+            type: 'number',
+            admin: {
+                position: 'sidebar',
+                description: 'Lower shows first. Projects without a number come after, newest first.',
+            },
+        },
+        {
+            name: 'isConcept',
+            type: 'checkbox',
+            label: 'Concept project',
+            defaultValue: false,
+            admin: {
+                position: 'sidebar',
+                description: 'Shows a "Concept" badge — for work that was not built for a real client.',
+            },
+        },
+        {
+            // Several destinations per project, e.g. App Store + web app + GitHub.
+            name: 'links',
+            type: 'array',
+            labels: {
+                singular: 'Link',
+                plural: 'Links',
+            },
+            admin: {
+                description: 'Shown at the top of the case study. App Store links get an App Store-style button.',
+            },
+            fields: [
+                {
+                    type: 'row',
+                    fields: [
+                        {
+                            name: 'label',
+                            type: 'text',
+                            required: true,
+                            admin: {
+                                description: 'e.g. "Download on the App Store", "Open the web app".',
+                            },
+                        },
+                        {
+                            name: 'url',
+                            type: 'text',
+                            required: true,
+                        },
+                        {
+                            name: 'kind',
+                            type: 'select',
+                            required: true,
+                            defaultValue: 'web',
+                            options: [
+                                {label: 'App Store', value: 'appstore'},
+                                {label: 'Website', value: 'web'},
+                                {label: 'GitHub', value: 'github'},
+                                {label: 'Other', value: 'other'},
+                            ],
+                        },
+                    ],
+                },
+            ],
         },
         {
             type: 'tabs',
@@ -102,6 +167,35 @@ export const Projects: CollectionConfig = {
                                 {
                                     name: 'techName',
                                     type: 'text',
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    label: 'Testimonial',
+                    fields: [
+                        {
+                            name: 'testimonial',
+                            type: 'group',
+                            admin: {
+                                description: 'Optional. Leave the quote empty to hide it.',
+                            },
+                            fields: [
+                                {
+                                    name: 'quote',
+                                    type: 'textarea',
+                                },
+                                {
+                                    name: 'name',
+                                    type: 'text',
+                                },
+                                {
+                                    name: 'role',
+                                    type: 'text',
+                                    admin: {
+                                        description: 'e.g. "Founder, Nap Atlas".',
+                                    },
                                 },
                             ],
                         },
