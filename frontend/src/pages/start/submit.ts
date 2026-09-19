@@ -42,6 +42,27 @@ const UTM_FIELDS = [
   ['utmCampaign', 'utm_campaign'],
 ] as const
 
+/**
+ * Browsers always send Origin on a POST. It must be this site. Astro's own
+ * `security.checkOrigin` does the same in production builds; this also
+ * covers dev and hosts that rewrite the request URL behind a proxy.
+ */
+const sameSite = (request: Request) => {
+  const origin = request.headers.get('origin')
+  if (!origin) return true // Not a browser, or a very old one; the other checks still apply.
+  let host: string
+  try {
+    host = new URL(origin).host
+  } catch {
+    return false
+  }
+  const allowed = new Set<string>([new URL(request.url).host])
+  const forwarded = request.headers.get('x-forwarded-host')
+  if (forwarded) allowed.add(forwarded.split(',')[0].trim())
+  if (import.meta.env.SITE) allowed.add(new URL(import.meta.env.SITE).host)
+  return allowed.has(host)
+}
+
 const json = (status: number, body: Record<string, unknown>) =>
   new Response(JSON.stringify(body), {
     status,
@@ -70,13 +91,24 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   // Pretend it worked, so bots learn nothing.
   const fakeSuccess = () => (wantsJson ? json(200, { ok: true }) : redirect('/start/thanks'))
 
+  if (!sameSite(request)) {
+    return new Response('Cross-site form submissions are not allowed.', { status: 403 })
+  }
+
   const length = Number(request.headers.get('content-length') ?? 0)
   if (length > MAX_BODY_BYTES) {
     return fail(413, 'too-large', 'That submission is too large.')
   }
 
   try {
-    form = await request.formData()
+    // Content-Length can be missing, so measure the body itself too.
+    const body = await request.arrayBuffer()
+    if (body.byteLength > MAX_BODY_BYTES) {
+      return fail(413, 'too-large', 'That submission is too large.')
+    }
+    form = await new Response(body, {
+      headers: { 'Content-Type': request.headers.get('content-type') ?? '' },
+    }).formData()
   } catch {
     return fail(400, 'bad-request', 'Something went wrong sending the form. Please try again.')
   }
