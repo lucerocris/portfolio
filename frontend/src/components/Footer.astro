@@ -7,9 +7,9 @@ const methods = contactMethods();
 const year = new Date().getFullYear();
 ---
 
-<footer class="mx-auto w-full max-w-7xl px-6 pb-10 md:px-12">
-    <div class="flex flex-col gap-8 border-t border-zinc-800 pt-10 md:flex-row md:items-start md:justify-between">
-        <div class="flex flex-col gap-1">
+<footer class="mx-auto w-full max-w-7xl px-6 pb-[max(4rem,calc(env(safe-area-inset-bottom)+2.5rem))] md:px-12 md:pb-20">
+    <div class="flex flex-col gap-10 border-t border-zinc-800 pt-12 md:flex-row md:items-start md:justify-between md:pt-16">
+        <div class="flex flex-col gap-2">
             <p class="font-medium text-white">{site.name}</p>
             <p class="text-sm text-zinc-400">{site.role} · {site.location}</p>
         </div>
@@ -40,5 +40,5 @@ const year = new Date().getFullYear();
         </div>
     </div>
 
-    <p class="mt-8 text-sm text-zinc-400">© {year} {site.name}</p>
+    <p class="mt-12 text-sm text-zinc-400">© {year} {site.name}</p>
 </footer>
