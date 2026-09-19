@@ -46,22 +46,23 @@ const stack = [
 // automation does, never whose systems (see ~/personal/business/cv/README.md).
 const experience = [
     {
+        role: "Independent Developer",
+        org: "Websites, software & automation",
+        when: "Jun 2026 – Present",
+        body: "My own practice, building for businesses from first call to launch. Recent work: a Shopify store for an Australian retail brand.",
+    },
+    {
         role: "Software Engineer Intern, Automation",
         org: "Evo Tech Software Solutions",
-        when: "Aug 2026 – Present",
+        when: "Aug 2026 – Aug 2027",
         body: "Building automations that take repetitive manual work off an e-commerce operations team: they watch client stores, flag problems as they happen, and prepare each one as a ready-to-work task.",
     },
     {
         role: "Platform Maintainer & Tech Lead",
         org: "PickleRank PH",
         when: "Jul 2026 – Present",
+        type: "Part-time",
         body: "Run and improve the ranking and tournament platform, including online payments, and lead the tech team on tournament days.",
-    },
-    {
-        role: "Freelance Web Developer",
-        org: "Independent",
-        when: "Jun 2026 – Present",
-        body: "Built a Shopify store for an Australian retail brand, from scoping to launch.",
     },
     {
         role: "Software Developer",
@@ -163,7 +164,9 @@ const highlights = ["TypeScript", "Python", "Next.js", "React", "Flutter", "Supa
             <ol class="flex flex-col divide-y divide-zinc-800">
                 {experience.map((job) => (
                         <li class="grid grid-cols-1 gap-2 py-6 first:pt-0 md:grid-cols-[12rem_1fr] md:gap-8">
-                            <p class="text-sm text-zinc-400 md:pt-1">{job.when}</p>
+                            <p class="text-sm text-zinc-400 md:pt-1">
+                                {job.when}{job.type && <span class="block md:mt-1">{job.type}</span>}
+                            </p>
                             <div class="flex max-w-2xl flex-col gap-2">
                                 <h3 class="text-lg font-medium text-white">
                                     {job.role} <span class="text-zinc-400">· {job.org}</span>
