@@ -49,6 +49,15 @@ type MediaLike = string | Media | null | undefined
 export const asMedia = (value: MediaLike): Media | null =>
   value && typeof value !== 'string' ? value : null
 
+/**
+ * Alt text for an upload, or `fallback` when the stored alt is missing or
+ * looks like a filename ("nap-atlas-featured") rather than a description.
+ */
+export const altText = (media: Media | null, fallback: string) => {
+  const alt = media?.alt?.trim()
+  return alt && /\s/.test(alt) ? alt : fallback
+}
+
 type SizeCandidate = { url: string; width: number; height?: number | null }
 
 /**
