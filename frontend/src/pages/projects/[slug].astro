@@ -66,7 +66,7 @@ const ogImage = sizedUrl(featuredImage, 900) ?? "/profile.webp";
     {!project && (
             <div class="flex flex-col gap-6">
                 <h1 class="text-3xl font-semibold md:text-5xl">Project not found</h1>
-                <p class="max-w-xl text-zinc-500">
+                <p class="max-w-xl text-zinc-400">
                     There is no project with the slug <span class="text-zinc-300">{slug}</span>. It may have been
                     renamed, or the Payload server may not be running.
                 </p>
@@ -129,13 +129,13 @@ const ogImage = sizedUrl(featuredImage, 900) ?? "/profile.webp";
                     <div class="flex-1">
                         {body ? (
                                 <section class="flex flex-col gap-4">
-                                    <h2 class="border-b border-zinc-500 pb-3 text-sm tracking-wide text-zinc-500 uppercase">
+                                    <h2 class="border-b border-zinc-500 pb-3 text-sm tracking-wide text-zinc-400 uppercase">
                                         About the project
                                     </h2>
                                     <div class="case-study-body" set:html={body}/>
                                 </section>
                         ) : (
-                                <p class="text-zinc-500">No write-up for this project yet.</p>
+                                <p class="text-zinc-400">No write-up for this project yet.</p>
                         )}
                     </div>
 
@@ -144,7 +144,7 @@ const ogImage = sizedUrl(featuredImage, 900) ?? "/profile.webp";
 
                                 {services.length > 0 && (
                                         <section class="flex flex-col gap-4">
-                                            <h2 class="border-b border-zinc-500 pb-3 text-sm tracking-wide text-zinc-500 uppercase">
+                                            <h2 class="border-b border-zinc-500 pb-3 text-sm tracking-wide text-zinc-400 uppercase">
                                                 Provided services
                                             </h2>
                                             <ul class="flex flex-col gap-2">
@@ -157,7 +157,7 @@ const ogImage = sizedUrl(featuredImage, 900) ?? "/profile.webp";
 
                                 {techStack.length > 0 && (
                                         <section class="flex flex-col gap-4">
-                                            <h2 class="border-b border-zinc-500 pb-3 text-sm tracking-wide text-zinc-500 uppercase">
+                                            <h2 class="border-b border-zinc-500 pb-3 text-sm tracking-wide text-zinc-400 uppercase">
                                                 Technology stack
                                             </h2>
                                             <ul class="flex flex-wrap gap-2">
@@ -176,7 +176,7 @@ const ogImage = sizedUrl(featuredImage, 900) ?? "/profile.webp";
                 {/* Gallery */}
                 {gallery.length > 0 && (
                         <section class="flex flex-col gap-6">
-                            <h2 class="border-b border-zinc-500 pb-3 text-sm tracking-wide text-zinc-500 uppercase">
+                            <h2 class="border-b border-zinc-500 pb-3 text-sm tracking-wide text-zinc-400 uppercase">
                                 Gallery
                             </h2>
                             <div class="grid grid-cols-1 items-start gap-6 sm:grid-cols-2">
@@ -196,7 +196,7 @@ const ogImage = sizedUrl(featuredImage, 900) ?? "/profile.webp";
                                                     height={item.image.height ?? undefined}
                                             />
                                             {item.caption && (
-                                                    <figcaption class="text-sm text-zinc-500">{item.caption}</figcaption>
+                                                    <figcaption class="text-sm text-zinc-400">{item.caption}</figcaption>
                                             )}
                                         </figure>
                                 ))}
@@ -222,7 +222,7 @@ const ogImage = sizedUrl(featuredImage, 900) ?? "/profile.webp";
 
 <style is:global>
     .c-breadcrumbs__link {
-        color: #71717a !important;
+        color: #a1a1aa !important;
         text-decoration: none;
         transition: color 0.2s ease;
     }
