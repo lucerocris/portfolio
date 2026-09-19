@@ -26,7 +26,7 @@ const services = [
 const stack = [
     {
         label: "Languages",
-        items: ["TypeScript", "JavaScript", "PHP", "Dart"],
+        items: ["TypeScript", "JavaScript", "Python", "PHP", "Dart"],
     },
     {
         label: "Frontend",
@@ -34,16 +34,45 @@ const stack = [
     },
     {
         label: "Backend & data",
-        items: ["Node.js", "Payload CMS", "CodeIgniter", "Supabase", "PostgreSQL", "MongoDB", "MySQL", "Redis"],
+        items: ["Node.js", "FastAPI", "Payload CMS", "CodeIgniter", "Supabase", "PostgreSQL", "MongoDB", "MySQL", "Redis"],
     },
     {
         label: "Platform",
-        items: ["DigitalOcean", "Vercel", "Shopify", "Pusher", "PostHog"],
+        items: ["DigitalOcean", "Vercel", "Shopify", "Pusher", "PostHog", "Playwright", "n8n"],
+    },
+];
+
+// Career so far, newest first. Evo Tech work is under NDA: say what the
+// automation does, never whose systems (see ~/personal/business/cv/README.md).
+const experience = [
+    {
+        role: "Software Engineer Intern, Automation",
+        org: "Evo Tech Software Solutions",
+        when: "Aug 2026 – Present",
+        body: "Building automations that take repetitive manual work off an e-commerce operations team: they watch client stores, flag problems as they happen, and prepare each one as a ready-to-work task.",
+    },
+    {
+        role: "Platform Maintainer & Tech Lead",
+        org: "PickleRank PH",
+        when: "Jul 2026 – Present",
+        body: "Run and improve the ranking and tournament platform, including online payments, and lead the tech team on tournament days.",
+    },
+    {
+        role: "Freelance Web Developer",
+        org: "Independent",
+        when: "Jun 2026 – Present",
+        body: "Built a Shopify store for an Australian retail brand, from scoping to launch.",
+    },
+    {
+        role: "Software Developer",
+        org: "Pocket Concerts",
+        when: "Oct 2025",
+        body: "Built the registration and QR check-in system for a concert with 600 registrants.",
     },
 ];
 
 // The headline tools, shown up front; the full list sits behind a toggle.
-const highlights = ["TypeScript", "Next.js", "React", "Flutter", "Supabase", "PostgreSQL", "PHP", "Shopify"];
+const highlights = ["TypeScript", "Python", "Next.js", "React", "Flutter", "Supabase", "PostgreSQL", "Shopify"];
 ---
 
 <Layout
@@ -123,6 +152,27 @@ const highlights = ["TypeScript", "Next.js", "React", "Flutter", "Supabase", "Po
                         </div>
                 ))}
             </div>
+        </section>
+
+        {/* Experience */}
+        <section class="flex flex-col gap-6" aria-labelledby="experience-title">
+            <h2 id="experience-title" class="border-b border-zinc-500 pb-3 text-sm tracking-wide text-zinc-400 uppercase">
+                Experience
+            </h2>
+
+            <ol class="flex flex-col divide-y divide-zinc-800">
+                {experience.map((job) => (
+                        <li class="grid grid-cols-1 gap-2 py-6 first:pt-0 md:grid-cols-[12rem_1fr] md:gap-8">
+                            <p class="text-sm text-zinc-400 md:pt-1">{job.when}</p>
+                            <div class="flex max-w-2xl flex-col gap-2">
+                                <h3 class="text-lg font-medium text-white">
+                                    {job.role} <span class="text-zinc-400">· {job.org}</span>
+                                </h3>
+                                <p class="text-zinc-400">{job.body}</p>
+                            </div>
+                        </li>
+                ))}
+            </ol>
         </section>
 
         {/* Stack */}
