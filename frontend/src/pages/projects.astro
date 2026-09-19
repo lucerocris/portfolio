@@ -7,8 +7,13 @@ import {CMS_PAGE_CACHE_CONTROL, altText, asMedia, fetchProjects, imageAttrs, siz
 const result = await fetchProjects();
 const projects = result.ok ? result.data : [];
 
+// Only a successful render is cached at the edge; an outage answers 503 so
+// the empty list is neither cached nor indexed.
 if (result.ok) {
     Astro.response.headers.set("Cache-Control", CMS_PAGE_CACHE_CONTROL);
+} else {
+    Astro.response.status = 503;
+    Astro.response.headers.set("Retry-After", "60");
 }
 
 // The image column is half the 1280px container (minus padding and gap) on
