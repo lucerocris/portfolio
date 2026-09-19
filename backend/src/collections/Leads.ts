@@ -8,6 +8,7 @@ import type {
   PayloadRequest,
 } from 'payload'
 
+import { notifyNewLead } from '../hooks/notifyNewLead'
 import { LEAD_OPTIONS } from '../lib/leadOptions'
 
 /**
@@ -175,6 +176,7 @@ export const Leads: CollectionConfig = {
   hooks: {
     beforeValidate: [keepPublicFields],
     beforeChange: [stampNewLead],
+    afterChange: [notifyNewLead],
   },
   timestamps: true,
   fields: [
