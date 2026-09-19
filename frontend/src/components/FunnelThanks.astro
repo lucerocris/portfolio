@@ -72,10 +72,11 @@ const next = [
                 </div>
                 <p class="thanks-reply">
                     <span class="dot" aria-hidden="true"></span>
-                    I reply {funnel.replyTime}.
-                    {email && (booking || messenger) && (
-                            <>You can also email <a href={`mailto:${email}`}>{email}</a>.</>
+                    <span>
+                        I reply {funnel.replyTime}.{email && (booking || messenger) && (
+                            <> You can also email <a href={`mailto:${email}`}>{email}</a>.</>
                     )}
+                    </span>
                 </p>
             </div>
     )}
