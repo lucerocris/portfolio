@@ -5,17 +5,19 @@
  */
 export const LEAD_OPTIONS = {
   businessType: [
-    { label: 'Resort', value: 'resort' },
-    { label: 'Boutique hotel', value: 'hotel' },
-    { label: 'Event venue / events business', value: 'events' },
-    { label: 'Other business', value: 'other' },
+    { label: 'Shop / retail', value: 'retail' },
+    { label: 'Restaurant / café / food', value: 'food' },
+    { label: 'Resort / hotel / events', value: 'hospitality' },
+    { label: 'Clinic / health / wellness', value: 'health' },
+    { label: 'Services business', value: 'services' },
+    { label: 'Other', value: 'other' },
   ],
   painPoints: [
-    { label: 'Inquiries pile up in Messenger', value: 'messenger' },
+    { label: 'Too much manual work', value: 'manual' },
+    { label: 'Inquiries slip through', value: 'inquiries' },
     { label: 'No website / outdated website', value: 'website' },
-    { label: 'Paying OTA commissions', value: 'ota' },
-    { label: 'Bookings & deposits tracked by hand', value: 'manual' },
-    { label: 'Wants online payments / deposits', value: 'payments' },
+    { label: 'Hard to track sales / stock / customers', value: 'tracking' },
+    { label: 'Wants to sell / book / take payments online', value: 'online' },
     { label: 'Other', value: 'other' },
   ],
   inquiryVolume: [

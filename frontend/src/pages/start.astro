@@ -1,7 +1,8 @@
 ---
 /**
- * /start: the lead magnet Cris's Instagram bio links to. A free "Direct
- * Bookings & Inquiry Audit" for resorts, hotels and event businesses in Cebu.
+ * /start: the lead magnet Cris's Instagram bio links to. A free business
+ * audit for any business owner: where time and customers slip away, and what
+ * technology could fix.
  *
  * It's one <form> that posts to /start/submit. With JS, the questions show
  * one at a time (the script at the bottom); without JS, it's a normal long
@@ -16,8 +17,7 @@ import FunnelThanks from "../components/FunnelThanks.astro";
 import {
     ArrowLeft,
     ArrowRight,
-    BedDouble,
-    CalendarHeart,
+    ChartColumn,
     Check,
     CircleAlert,
     Clock,
@@ -28,10 +28,12 @@ import {
     LoaderCircle,
     MessagesSquare,
     NotebookPen,
-    Percent,
     ShieldCheck,
+    Stethoscope,
     Store,
     TreePalm,
+    UtensilsCrossed,
+    Wrench,
 } from "@lucide/astro";
 import {
     budgets,
@@ -47,13 +49,13 @@ import {contactEmail, funnel, messengerUrl} from "../lib/funnel";
 
 const TOTAL = 8;
 
-const typeIcons = {resort: TreePalm, hotel: BedDouble, events: CalendarHeart, other: Store};
+const typeIcons = {retail: Store, food: UtensilsCrossed, hospitality: TreePalm, health: Stethoscope, services: Wrench, other: Ellipsis};
 const painIcons = {
-    messenger: MessagesSquare,
-    website: Globe,
-    ota: Percent,
     manual: NotebookPen,
-    payments: CreditCard,
+    inquiries: MessagesSquare,
+    website: Globe,
+    tracking: ChartColumn,
+    online: CreditCard,
     other: Ellipsis,
 };
 
@@ -81,9 +83,9 @@ const pageError = errorMessages[errorCode] ?? (errorCode ? errorMessages["bad-re
 const messenger = messengerUrl();
 const email = contactEmail();
 
-const title = "Free Direct Bookings & Inquiry Audit for Cebu resorts | Cris Lucero";
+const title = "Free business audit: find what's slowing you down | Cris Lucero";
 const description =
-    "Resorts, boutique hotels and event venues in Cebu: answer 8 quick questions and get a free, personal audit of how you handle inquiries and bookings, with 3 fixes, within 48 hours.";
+    "Answer 8 quick questions about your business and get a free, personal audit with 3 practical fixes, from websites to software and automation, within 48 hours.";
 ---
 
 <Layout
@@ -104,17 +106,16 @@ const description =
             <section class="pitch" aria-labelledby="pitch-title">
                 <p class="eyebrow">
                     <span class="dot" aria-hidden="true"></span>
-                    Free for resorts, hotels and event venues in Cebu
+                    Free for business owners
                 </p>
 
                 <h1 id="pitch-title" class="pitch-title">
-                    Get more direct bookings. <span class="quiet">Stop losing inquiries in Messenger.</span>
+                    Find what’s slowing your business down. <span class="quiet">And how to fix it.</span>
                 </h1>
 
                 <p class="pitch-lead">
-                    Answer 8 quick questions about your business. I’ll personally go through how guests reach you
-                    today, from your Facebook page and Messenger replies to how you take bookings and deposits,
-                    and send you <strong>a short audit with 3 fixes within {funnel.auditTurnaround}</strong>.
+                    Answer 8 quick questions about your business. I’ll personally look at how you work today
+                    and send you <strong>a short audit with 3 practical fixes within {funnel.auditTurnaround}</strong>.
                 </p>
 
                 <div class="pitch-start js-only lg:hidden">
@@ -136,20 +137,20 @@ const description =
                         <li>
                             <span class="gets-num" aria-hidden="true">1</span>
                             <div>
-                                <p class="gets-head">Where inquiries slip away</p>
+                                <p class="gets-head">Where time and customers slip away</p>
                                 <p class="gets-body">
-                                    Slow replies, rate questions left hanging, and the dead ends between “how much?”
-                                    and a paid deposit.
+                                    The manual work, missed messages and bottlenecks that quietly cost you hours
+                                    and sales.
                                 </p>
                             </div>
                         </li>
                         <li>
                             <span class="gets-num" aria-hidden="true">2</span>
                             <div>
-                                <p class="gets-head">How to win more bookings direct</p>
+                                <p class="gets-head">What technology can fix</p>
                                 <p class="gets-body">
-                                    Practical ways to rely less on Agoda and Booking.com, so more of each booking
-                                    stays with you.
+                                    Where a website, custom software or automation would make the biggest
+                                    difference, in plain language.
                                 </p>
                             </div>
                         </li>
@@ -168,8 +169,8 @@ const description =
                 <div class="proof">
                     <p class="proof-who">Who’s reviewing it</p>
                     <p class="proof-body">
-                        I’m Cris Lucero, a web and app developer based in Cebu. I build the websites, booking flows
-                        and admin tools small businesses run on.
+                        I’m Cris Lucero, a web and app developer based in Cebu. I build the websites, software and
+                        automation businesses run on.
                     </p>
                     <ul class="proof-list" aria-label="Recent work">
                         <li>Nook: café app on the App Store</li>
@@ -287,7 +288,7 @@ const description =
                                     <label class="field-label" for="businessName">Business name</label>
                                     <input class="input" id="businessName" name="businessName" type="text" required
                                            minlength="2" maxlength={MAX.name} autocomplete="organization"
-                                           placeholder="e.g. Blue Reef Dive Resort"
+                                           placeholder="e.g. Sunrise Bakery"
                                            data-msg="Add your business name."
                                            aria-describedby="err-businessName"/>
                                     <p class="field-error" data-error-for="businessName" id="err-businessName" hidden></p>
@@ -301,7 +302,7 @@ const description =
                                            spellcheck="false" placeholder="facebook.com/yourpage"
                                            aria-describedby="link-hint"/>
                                     <p class="field-hint" id="link-hint">
-                                        So I can see what your guests see. It makes the audit far more useful.
+                                        So I can see what your customers see. It makes the audit far more useful.
                                     </p>
                                 </div>
                             </div>
@@ -361,8 +362,8 @@ const description =
                             {
                                 n: 4,
                                 name: "inquiryVolume",
-                                title: "Roughly how many inquiries do you get in a week?",
-                                sub: "Across Messenger, calls, texts, email and booking sites. A guess is fine.",
+                                title: "Roughly how many customer inquiries or orders do you get in a week?",
+                                sub: "Across messages, calls, email and walk-ins. A guess is fine.",
                                 options: inquiryVolumes,
                                 cols: 2,
                                 msg: "Pick the closest range.",

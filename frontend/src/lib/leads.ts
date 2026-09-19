@@ -11,18 +11,20 @@ import type { Lead } from '@backend'
 type Option<V extends string> = { value: V; label: string; hint?: string }
 
 export const businessTypes = [
-  { value: 'resort', label: 'Resort', hint: 'Beach, dive or island resort' },
-  { value: 'hotel', label: 'Boutique hotel', hint: 'Or an inn, guesthouse or homestay' },
-  { value: 'events', label: 'Event venue or events business', hint: 'Weddings, parties, conferences, catering' },
-  { value: 'other', label: 'Other business', hint: 'Café, clinic, shop, studio…' },
+  { value: 'retail', label: 'Shop or retail', hint: 'A physical store, an online shop, or both' },
+  { value: 'food', label: 'Restaurant, café or food business' },
+  { value: 'hospitality', label: 'Resort, hotel or events' },
+  { value: 'health', label: 'Clinic, health or wellness' },
+  { value: 'services', label: 'Services business', hint: 'Salon, repairs, cleaning, agency, school…' },
+  { value: 'other', label: 'Something else', hint: 'Tell me what you do' },
 ] as const satisfies readonly Option<Lead['businessType']>[]
 
 export const painPoints = [
-  { value: 'messenger', label: 'Inquiries pile up in Messenger', hint: '“Rates for 2 pax on the 14th?” and then they go quiet' },
+  { value: 'manual', label: 'Too much manual work', hint: 'Paper, spreadsheets, copying things by hand' },
+  { value: 'inquiries', label: 'Messages and inquiries slip through the cracks' },
   { value: 'website', label: 'No website, or an outdated one' },
-  { value: 'ota', label: 'Paying Agoda or Booking.com commissions' },
-  { value: 'manual', label: 'Bookings and deposits tracked by hand' },
-  { value: 'payments', label: 'I want to take payments or deposits online' },
+  { value: 'tracking', label: 'Hard to keep track of sales, stock or customers' },
+  { value: 'online', label: 'I want customers to order, book or pay online' },
   { value: 'other', label: 'Something else' },
 ] as const satisfies readonly Option<Lead['painPoints'][number]>[]
 

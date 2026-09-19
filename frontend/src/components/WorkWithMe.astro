@@ -21,7 +21,7 @@ const {
 
 const cta = primaryCta();
 // The primary CTA already covers one route; list the others underneath.
-const others = contactMethods().filter((m) => m.kind !== "booking" && m.href !== cta?.href);
+const others = contactMethods().filter((m) => m.href !== cta?.href);
 ---
 
 <section class="flex flex-col gap-6 rounded-2xl border border-zinc-800 bg-white/[0.02] p-6 md:p-10" aria-labelledby="work-with-me">

@@ -151,6 +151,7 @@ export interface User {
 export interface Media {
   id: string;
   alt: string;
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -310,9 +311,9 @@ export interface Lead {
    * Call notes, audit findings, what they said, what to send next.
    */
   notes?: string | null;
-  businessType: 'resort' | 'hotel' | 'events' | 'other';
+  businessType: 'retail' | 'food' | 'hospitality' | 'health' | 'services' | 'other';
   businessTypeOther?: string | null;
-  painPoints: ('messenger' | 'website' | 'ota' | 'manual' | 'payments' | 'other')[];
+  painPoints: ('manual' | 'inquiries' | 'website' | 'tracking' | 'online' | 'other')[];
   painOther?: string | null;
   inquiryVolume: 'lt10' | '10-30' | '30-100' | '100plus';
   teamSize: 'solo' | '2-5' | '6-20' | '20plus';
@@ -436,6 +437,7 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;

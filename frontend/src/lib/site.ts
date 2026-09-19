@@ -53,25 +53,10 @@ export type Cta = {
 const clean = (value: string) => value.trim()
 
 /**
- * The main call to action, by priority: booking page, then Messenger, then
- * email. Null when none are set, and every CTA hides itself.
+ * The main call to action: the free audit funnel at /start, which ends with
+ * the booking link. It lives on this site, so it always shows.
  */
-export const primaryCta = (): Cta | null => {
-  const bookingUrl = clean(site.bookingUrl)
-  const messengerUrl = clean(site.messengerUrl)
-  const email = clean(site.email)
-
-  if (bookingUrl) {
-    return { href: bookingUrl, label: 'Book a free call', external: true }
-  }
-  if (messengerUrl) {
-    return { href: messengerUrl, label: 'Book a free call', external: true }
-  }
-  if (email) {
-    return { href: `mailto:${email}`, label: 'Book a free call', external: false }
-  }
-  return null
-}
+export const primaryCta = (): Cta => ({ href: '/start', label: 'Get a free audit', external: false })
 
 export type ContactMethod = {
   kind: 'booking' | 'messenger' | 'email' | 'cv'

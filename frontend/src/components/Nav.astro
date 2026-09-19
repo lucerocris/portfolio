@@ -40,9 +40,9 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
                         </a>
                     </li>
             ))}
-            {primaryCta() && (
+            {primaryCta() && !Astro.url.pathname.startsWith("/start") && (
                     <li>
-                        <CtaButton size="sm" compactLabel="Book a call"/>
+                        <CtaButton size="sm" compactLabel="Free audit"/>
                     </li>
             )}
         </ul>
