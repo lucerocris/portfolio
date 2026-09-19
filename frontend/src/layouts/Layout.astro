@@ -6,6 +6,9 @@
  */
 import "../styles/global.css";
 import Nav from "../components/Nav.astro";
+// Preload the Latin subset of the self-hosted font so text renders in Onest
+// on first paint instead of swapping.
+import onestLatin from "@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url";
 
 interface Props {
     title: string;
@@ -22,7 +25,7 @@ const {
     description,
     ogImage = "/profile.webp",
     ogType = "website",
-    bodyClass = "bg-[#151419] min-h-screen w-screen text-white font-['Onest']",
+    bodyClass = "bg-[#151419] min-h-screen w-screen text-white",
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -52,10 +55,7 @@ const ogImageUrl = ogImage.startsWith("http") ? ogImage : new URL(ogImage, Astro
     <meta name="twitter:description" content={description}>
     <meta name="twitter:image" content={ogImageUrl}>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Onest:wght@100..900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap"
-          rel="stylesheet">
+    <link rel="preload" href={onestLatin} as="font" type="font/woff2" crossorigin>
 </head>
 <body class={bodyClass}>
 <Nav/>

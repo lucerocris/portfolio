@@ -1,8 +1,9 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Onest:wght@100..900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+/* Self-hosted variable Onest: no third-party request, no render-blocking CSS. */
+@import "@fontsource-variable/onest";
 
 @theme {
-    --font-roboto: "Roboto", sans-serif;
+    --font-sans: "Onest Variable", ui-sans-serif, system-ui, sans-serif;
 }
 
 /* Solid background only */
@@ -12,7 +13,7 @@ body {
     position: relative;
 }
 
-/* Subtle grain overlay */
+/* Subtle grain overlay. grain.png is a 128px tile, repeated. */
 body::before {
     content: "";
     position: fixed;
