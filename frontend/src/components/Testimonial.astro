@@ -1,0 +1,28 @@
+---
+/** A client quote. Renders nothing without a quote. */
+import type {ProjectTestimonial} from "../lib/cms";
+
+interface Props {
+    testimonial: ProjectTestimonial | null;
+    /** Shown after the name when the role doesn't already say which project. */
+    project?: string;
+}
+
+const {testimonial, project} = Astro.props;
+const attribution = [testimonial?.name, testimonial?.role].filter(Boolean).join(", ");
+---
+
+{testimonial?.quote && (
+    <figure class="flex flex-col gap-4 border-l-2 border-zinc-600 pl-5">
+        <blockquote class="text-lg text-zinc-200 md:text-xl">
+            <p>“{testimonial.quote.trim()}”</p>
+        </blockquote>
+        {(attribution || project) && (
+                <figcaption class="text-sm text-zinc-400">
+                    {attribution && <span class="text-zinc-300">{attribution}</span>}
+                    {attribution && project && <span> · </span>}
+                    {project && <span>{project}</span>}
+                </figcaption>
+        )}
+    </figure>
+)}

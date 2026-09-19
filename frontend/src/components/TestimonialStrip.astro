@@ -1,0 +1,41 @@
+---
+/**
+ * Homepage testimonial strip. Rendered as a server island (server:defer) so
+ * the homepage itself can stay prerendered while quotes added in the CMS
+ * still show up without a redeploy. Renders nothing when no project has a
+ * testimonial, or when the CMS can't be reached.
+ */
+import Testimonial from "./Testimonial.astro";
+import {CMS_PAGE_CACHE_CONTROL, fetchProjects, projectTestimonial} from "../lib/cms";
+
+const result = await fetchProjects();
+const quotes = result.ok
+    ? result.data.flatMap((project) => {
+        const testimonial = projectTestimonial(project);
+        return testimonial ? [{project, testimonial}] : [];
+    })
+    : [];
+
+if (result.ok) {
+    Astro.response.headers.set("Cache-Control", CMS_PAGE_CACHE_CONTROL);
+}
+---
+
+{quotes.length > 0 && (
+    <section class="flex flex-col gap-8" aria-labelledby="testimonials-heading">
+        <h2 id="testimonials-heading" class="border-b border-zinc-500 pb-3 text-sm tracking-wide text-zinc-400 uppercase">
+            What clients say
+        </h2>
+        <div class="grid grid-cols-1 gap-10 md:grid-cols-2">
+            {quotes.map(({project, testimonial}) => (
+                    <div class="flex flex-col gap-3">
+                        <Testimonial testimonial={testimonial}/>
+                        <a href={`/projects/${project.slug}`}
+                           class="w-fit pl-5 text-sm text-zinc-400 underline-offset-4 hover:text-white hover:underline">
+                            {project.title} case study
+                        </a>
+                    </div>
+            ))}
+        </div>
+    </section>
+)}

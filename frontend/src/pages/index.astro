@@ -1,54 +1,64 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { Github, Instagram, Facebook, Linkedin, ArrowRight } from '@lucide/astro';
+import CtaButton from "../components/CtaButton.astro";
+import SocialLinks from "../components/SocialLinks.astro";
+import TestimonialStrip from "../components/TestimonialStrip.astro";
+import {ArrowRight} from "@lucide/astro";
+import {site, startingPriceText} from "../lib/site";
+
+// Static page: the hero has no CMS data. Testimonials load through a server
+// island so quotes added in the CMS appear without a rebuild.
+export const prerender = true;
+
+const priceText = startingPriceText();
 ---
 <Layout
-        title="Cris Lucero — Software Developer"
-        description="Software developer building web, mobile and commerce products end to end — from database schema to shipped interface."
-        bodyClass="bg-[#151419] min-h-screen w-screen"
+        title={`${site.name} — Web & App Developer in Cebu`}
+        description="Cris Lucero is a web and app developer in Cebu, Philippines, building websites, apps and online stores that help local businesses get more customers."
 >
 
-<!--main content-->
-<div class="mx-auto h-full max-w-7xl px-6 py-20 md:px-12 md:py-40">
-    <div class="flex flex-col w-full h-full">
-        <div class="flex flex-col gap-8">
+<div class="mx-auto max-w-7xl px-6 py-20 md:px-12 md:py-32">
+    <div class="flex flex-col gap-16 md:gap-24">
+        <section class="flex flex-col gap-8" aria-labelledby="hero-heading">
             <div class="flex flex-col gap-5">
-                <div class="flex flex-col gap-3">
-                    <div class="w-18 h-18 rounded-full">
-                        <img src="/avatar.webp" alt="Portrait of Cris Lucero" width="72" height="72" fetchpriority="high" class="w-full h-full object-cover rounded-full">
-                    </div>
-                    <h1 class="text-white text-3xl md:text-5xl font-bold w-full flex flex-col">Software Developer.
-                        <span> Problem Solver.</span></h1>
+                <div class="h-18 w-18 rounded-full">
+                    <img src="/avatar.webp" alt="Portrait of Cris Lucero" width="72" height="72" fetchpriority="high"
+                         class="h-full w-full rounded-full object-cover">
                 </div>
-                <p class="text-zinc-500 max-w-2xl">I build web, mobile and commerce products for businesses — the
-                    product your customers use, and the admin tools your team runs it with. One person accountable,
-                    from first commit to live.</p>
-                <div class="flex gap-4">
-                    <a href="https://github.com/lucerocris" target="_blank" rel="noopener noreferrer">
-                        <Github class="text-zinc-500 hover:text-white transition-colors cursor-pointer" />
-                    </a>
 
-                    <a href="https://www.instagram.com/crislucero22/" target="_blank" rel="noopener noreferrer">
-                        <Instagram class="text-zinc-500 hover:text-white transition-colors cursor-pointer" />
-                    </a>
+                <p class="text-sm font-medium text-zinc-400">Web &amp; app developer · {site.location}</p>
 
-                    <a href="https://www.facebook.com/crislawrence.lucero" target="_blank" rel="noopener noreferrer">
-                        <Facebook class="text-zinc-500 hover:text-white transition-colors cursor-pointer" />
-                    </a>
+                <h1 id="hero-heading" class="max-w-4xl text-3xl font-bold text-balance text-white md:text-5xl md:leading-tight">
+                    Websites and systems that help Cebu businesses get more customers.
+                </h1>
 
-                    <a href="https://www.linkedin.com/in/cris-lawrence-lucero-29639433b/" target="_blank" rel="noopener noreferrer">
-                        <Linkedin class="text-zinc-500 hover:text-white transition-colors cursor-pointer" />
-                    </a>
-                </div>
-            </div>
-            <a href="/projects" class="group w-fit"> <div class="flex items-center gap-2">
-                <p class="text-white font-medium border-b border-transparent group-hover:border-white transition-colors duration-300">
-                    View Projects
+                <p class="max-w-2xl text-zinc-400 md:text-lg">
+                    I build the website or app your customers use, and the admin tools your team runs it with —
+                    one person accountable from first call to launch. Recent work: a café app live on the App
+                    Store, the ranking platform for PickleRank PH, and an e-commerce build for an Australian brand.
                 </p>
-                <ArrowRight class="w-5 h-5 text-white transition-transform group-hover:translate-x-1 duration-300"/>
             </div>
-            </a>
-        </div>
+
+            <div class="flex flex-col gap-3">
+                <div class="flex flex-wrap items-center gap-x-8 gap-y-4">
+                    <CtaButton/>
+                    <a href="/projects" class="group w-fit">
+                        <span class="flex items-center gap-2">
+                            <span class="border-b border-transparent font-medium text-white transition-colors duration-300 group-hover:border-white">
+                                See the work
+                            </span>
+                            <ArrowRight class="h-5 w-5 text-white transition-transform duration-300 group-hover:translate-x-1"
+                                        aria-hidden="true"/>
+                        </span>
+                    </a>
+                </div>
+                {priceText && <p class="text-sm text-zinc-400">{priceText}</p>}
+            </div>
+
+            <SocialLinks/>
+        </section>
+
+        <TestimonialStrip server:defer/>
     </div>
 </div>
 </Layout>
