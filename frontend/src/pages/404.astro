@@ -1,6 +1,9 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import {ArrowRight} from "@lucide/astro";
+
+// No per-request data, so the 404 page is built once and served statically.
+export const prerender = true;
 ---
 
 <Layout
