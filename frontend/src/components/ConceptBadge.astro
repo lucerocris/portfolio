@@ -1,0 +1,12 @@
+---
+/** Marks self-initiated work that was not built for a real client. */
+interface Props {
+    class?: string;
+}
+const {class: className} = Astro.props;
+---
+
+<span class:list={["inline-flex w-fit items-center rounded-full border border-zinc-600 px-2.5 py-0.5 text-xs font-medium text-zinc-300", className]}
+      title="Self-initiated concept, not a client project">
+    Concept
+</span>

@@ -1,2 +1,2 @@
-export type { Project, Media } from './payload-types';
+export type { Project, Media, Lead } from './payload-types';
 

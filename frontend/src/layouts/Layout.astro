@@ -6,13 +6,24 @@
  */
 import "../styles/global.css";
 import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import {site} from "../lib/site";
+// Preload the Latin subset of the self-hosted font so text renders in Onest
+// on first paint instead of swapping.
+import onestLatin from "@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url";
 
 interface Props {
     title: string;
     description: string;
-    /** Absolute URL or site-root-relative path. Falls back to the profile photo. */
+    /** Absolute URL or site-root-relative path. Falls back to the 1200x630 share card. */
     ogImage?: string;
+    /** Pixel size of a custom ogImage, when known. */
+    ogImageWidth?: number | null;
+    ogImageHeight?: number | null;
+    ogImageAlt?: string;
     ogType?: "website" | "article";
+    /** Image URLs on the page; a cross-origin host (e.g. the Spaces CDN) gets a preconnect. */
+    imageUrls?: (string | undefined)[];
     /** Pages that lay out their own full-height hero opt out of min-h-screen. */
     bodyClass?: string;
 }
@@ -20,13 +31,29 @@ interface Props {
 const {
     title,
     description,
-    ogImage = "/profile.webp",
+    ogImage,
     ogType = "website",
-    bodyClass = "bg-[#151419] min-h-screen w-screen text-white font-['Onest']",
+    bodyClass = "bg-[#151419] min-h-screen w-full text-white",
 } = Astro.props;
 
+// The default share card is text only (name, role, Cebu) — see public/og-default.jpg.
+const og = ogImage
+    ? {src: ogImage, width: Astro.props.ogImageWidth, height: Astro.props.ogImageHeight, alt: Astro.props.ogImageAlt ?? title}
+    : {src: "/og-default.jpg", width: 1200, height: 630, alt: `${site.name} — ${site.role} · ${site.location}`};
+
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const ogImageUrl = ogImage.startsWith("http") ? ogImage : new URL(ogImage, Astro.site).href;
+
+// Once DO_SPACES_CDN_URL is set, media URLs point at the CDN. The host is
+// read from the URLs the CMS returns, so nothing is hardcoded here.
+const preconnectOrigins = [...new Set((Astro.props.imageUrls ?? []).flatMap((url) => {
+    try {
+        const origin = new URL(url ?? "").origin;
+        return origin !== new URL(Astro.url).origin && origin !== Astro.site?.origin ? [origin] : [];
+    } catch {
+        return [];
+    }
+}))];
+const ogImageUrl = og.src.startsWith("http") ? og.src : new URL(og.src, Astro.site).href;
 ---
 
 <!DOCTYPE html>
@@ -41,24 +68,32 @@ const ogImageUrl = ogImage.startsWith("http") ? ogImage : new URL(ogImage, Astro
     <meta name="description" content={description}>
 
     <meta property="og:type" content={ogType}>
-    <meta property="og:site_name" content="Cris Lucero">
+    <meta property="og:site_name" content={site.name}>
     <meta property="og:title" content={title}>
     <meta property="og:description" content={description}>
     <meta property="og:url" content={canonical}>
     <meta property="og:image" content={ogImageUrl}>
+    {og.width && og.height && (
+        <>
+            <meta property="og:image:width" content={String(og.width)}>
+            <meta property="og:image:height" content={String(og.height)}>
+        </>
+    )}
+    <meta property="og:image:alt" content={og.alt}>
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content={title}>
     <meta name="twitter:description" content={description}>
     <meta name="twitter:image" content={ogImageUrl}>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Onest:wght@100..900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap"
-          rel="stylesheet">
+    {preconnectOrigins.map((origin) => <link rel="preconnect" href={origin}>)}
+    <link rel="preload" href={onestLatin} as="font" type="font/woff2" crossorigin>
 </head>
 <body class={bodyClass}>
 <Nav/>
-<slot/>
+<main>
+    <slot/>
+</main>
+<Footer/>
 </body>
 </html>

@@ -1,0 +1,44 @@
+---
+/** Site-wide footer: who, where, how to get in touch. */
+import SocialLinks from "./SocialLinks.astro";
+import {contactMethods, site} from "../lib/site";
+
+const methods = contactMethods();
+const year = new Date().getFullYear();
+---
+
+<footer class="mx-auto w-full max-w-7xl px-6 pb-[max(4rem,calc(env(safe-area-inset-bottom)+2.5rem))] md:px-12 md:pb-20">
+    <div class="flex flex-col gap-10 border-t border-zinc-800 pt-12 md:flex-row md:items-start md:justify-between md:pt-16">
+        <div class="flex flex-col gap-2">
+            <p class="font-medium text-white">{site.name}</p>
+            <p class="text-sm text-zinc-400">{site.role} · {site.location}</p>
+        </div>
+
+        <div class="flex flex-col gap-4 md:items-end">
+            {methods.length > 0 && (
+                    <ul class="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+                        {methods.map((m) => (
+                                <li>
+                                    <a href={m.href}
+                                       {...(m.external ? {target: "_blank", rel: "noopener noreferrer"} : {})}
+                                       class="text-zinc-300 underline-offset-4 transition-colors hover:text-white hover:underline">
+                                        {m.label}
+                                    </a>
+                                </li>
+                        ))}
+                    </ul>
+            )}
+            <div class="flex items-center gap-6">
+                {site.cvPath && (
+                        <a href={site.cvPath} download
+                           class="text-sm text-zinc-300 underline-offset-4 transition-colors hover:text-white hover:underline">
+                            Download CV
+                        </a>
+                )}
+                <SocialLinks size={20}/>
+            </div>
+        </div>
+    </div>
+
+    <p class="mt-12 text-sm text-zinc-400">© {year} {site.name}</p>
+</footer>

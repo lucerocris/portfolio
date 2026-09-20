@@ -1,0 +1,919 @@
+---
+/**
+ * /start: the lead magnet Cris's Instagram bio links to. A free business
+ * audit for any business owner: where time and customers slip away, and what
+ * technology could fix.
+ *
+ * It's one <form> that posts to /start/submit. With JS, the questions show
+ * one at a time (the script at the bottom); without JS, it's a normal long
+ * form that still submits and lands on /start/thanks.
+ *
+ * Questions and their stored values live in src/lib/leads.ts; buttons and
+ * contact links in src/lib/funnel.ts.
+ */
+import "../styles/funnel.css";
+import Layout from "../layouts/Layout.astro";
+import FunnelThanks from "../components/FunnelThanks.astro";
+import {
+    ArrowLeft,
+    ArrowRight,
+    ChartColumn,
+    Check,
+    CircleAlert,
+    Clock,
+    CreditCard,
+    Ellipsis,
+    Gift,
+    Globe,
+    LoaderCircle,
+    MessagesSquare,
+    NotebookPen,
+    ShieldCheck,
+    Stethoscope,
+    Store,
+    TreePalm,
+    UtensilsCrossed,
+    Wrench,
+} from "@lucide/astro";
+import {
+    budgets,
+    businessTypes,
+    contactMethods,
+    inquiryVolumes,
+    MAX,
+    painPoints,
+    teamSizes,
+    timelines,
+} from "../lib/leads";
+import {contactEmail, funnel, messengerUrl} from "../lib/funnel";
+
+const TOTAL = 8;
+
+const typeIcons = {retail: Store, food: UtensilsCrossed, hospitality: TreePalm, health: Stethoscope, services: Wrench, other: Ellipsis};
+const painIcons = {
+    manual: NotebookPen,
+    inquiries: MessagesSquare,
+    website: Globe,
+    tracking: ChartColumn,
+    online: CreditCard,
+    other: Ellipsis,
+};
+
+// Where this visit came from, captured server-side so it works without JS.
+const params = Astro.url.searchParams;
+const param = (key: string) => (params.get(key) ?? "").slice(0, MAX.utm);
+const referrer = (Astro.request.headers.get("referer") ?? "").slice(0, MAX.url);
+const landingParams = new URLSearchParams(params);
+landingParams.delete("error");
+const landingQuery = landingParams.toString();
+const landingPage = `${Astro.url.pathname}${landingQuery ? `?${landingQuery}` : ""}`.slice(0, MAX.url);
+
+// Set by /start/submit when the no-JS form comes back with a problem.
+const errorMessages: Record<string, string> = {
+    invalid: "Some answers were missing. Please check each question below and send it again.",
+    "rate-limited": "That was a lot of submissions in a row. Please wait a few minutes and try again.",
+    "save-failed": "Sorry, your answers didn’t go through on my side. Please try again in a moment.",
+    unavailable: "Sorry, the form isn’t accepting answers right now.",
+    "too-large": "That was more text than the form can take. Please shorten your answers.",
+    "bad-request": "Something went wrong sending the form. Please try again.",
+};
+const errorCode = params.get("error") ?? "";
+const pageError = errorMessages[errorCode] ?? (errorCode ? errorMessages["bad-request"] : null);
+
+const messenger = messengerUrl();
+const email = contactEmail();
+
+const title = "Free business audit: find what's slowing you down | Cris Lucero";
+const description =
+    "Answer 8 quick questions about your business and get a free, personal audit with 3 practical fixes, from websites to software and automation, within 48 hours.";
+---
+
+<Layout
+        title={title}
+        description={description}
+        ogImage="/og-start.png"
+        bodyClass="bg-[#151419] min-h-screen w-full text-white font-['Onest','Onest_Variable',ui-sans-serif,system-ui,sans-serif]"
+>
+    <div class="funnel" data-funnel>
+        {/* Runs before the questions render, so JS users never see the long form flash. */}
+        <script is:inline>
+            document.currentScript.parentElement.classList.add("is-enhanced");
+            document.currentScript.parentElement.dataset.view = "intro";
+        </script>
+
+        <div class="funnel-shell">
+            {/* ---------- The offer ---------- */}
+            <section class="pitch" aria-labelledby="pitch-title">
+                <p class="eyebrow">
+                    <span class="dot" aria-hidden="true"></span>
+                    Free for business owners
+                </p>
+
+                <h1 id="pitch-title" class="pitch-title">
+                    Find what’s slowing your business down. <span class="quiet">And how to fix it.</span>
+                </h1>
+
+                <p class="pitch-lead">
+                    Answer 8 quick questions about your business. I’ll personally look at how you work today
+                    and send you <strong>a short audit with 3 practical fixes within {funnel.auditTurnaround}</strong>.
+                </p>
+
+                <div class="pitch-start js-only lg:hidden">
+                    <button type="button" class="btn btn-primary" data-start>
+                        Start my free audit
+                        <ArrowRight size={18} aria-hidden="true" class="btn-arrow"/>
+                    </button>
+                </div>
+
+                <ul class="pitch-meta" aria-label="At a glance">
+                    <li><Gift size={16} aria-hidden="true"/> Free, no obligation</li>
+                    <li><Clock size={16} aria-hidden="true"/> About 2 minutes</li>
+                    <li><ShieldCheck size={16} aria-hidden="true"/> Read by me, not a bot</li>
+                </ul>
+
+                <div class="gets">
+                    <h2 class="gets-title">What you’ll get</h2>
+                    <ol>
+                        <li>
+                            <span class="gets-num" aria-hidden="true">1</span>
+                            <div>
+                                <p class="gets-head">Where time and customers slip away</p>
+                                <p class="gets-body">
+                                    The manual work, missed messages and bottlenecks that quietly cost you hours
+                                    and sales.
+                                </p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="gets-num" aria-hidden="true">2</span>
+                            <div>
+                                <p class="gets-head">What technology can fix</p>
+                                <p class="gets-body">
+                                    Where a website, custom software or automation would make the biggest
+                                    difference, in plain language.
+                                </p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="gets-num" aria-hidden="true">3</span>
+                            <div>
+                                <p class="gets-head">3 fixes, in priority order</p>
+                                <p class="gets-body">
+                                    Clear next steps you can act on yourself, with me, or with anyone else.
+                                </p>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="proof">
+                    <p class="proof-who">Who’s reviewing it</p>
+                    <p class="proof-body">
+                        I’m Cris Lucero, a web and app developer based in Cebu. I build the websites, software and
+                        automation businesses run on.
+                    </p>
+                    <ul class="proof-list" aria-label="Recent work">
+                        <li>Nook: café app on the App Store</li>
+                        <li>PickleRank PH, with online payments</li>
+                        <li>Shopify store for an Australian brand</li>
+                    </ul>
+                </div>
+
+                <div class="pitch-start js-only lg:hidden">
+                    <button type="button" class="btn btn-primary" data-start>
+                        Start my free audit
+                        <ArrowRight size={18} aria-hidden="true" class="btn-arrow"/>
+                    </button>
+                </div>
+            </section>
+
+            {/* ---------- The quiz ---------- */}
+            <section class="quiz" id="form" aria-label="Audit questions">
+                <div class="quiz-card">
+                    <div class="js-only" data-quiz-header>
+                        <div class="quiz-top">
+                            <button type="button" class="btn btn-ghost" data-back>
+                                <ArrowLeft size={18} aria-hidden="true"/>
+                                Back
+                            </button>
+                            <p class="quiz-count" data-count aria-live="polite">1 of {TOTAL}</p>
+                        </div>
+                        <div class="progress" role="progressbar" aria-label="Progress" aria-valuemin="1"
+                             aria-valuemax={TOTAL} aria-valuenow="1" data-progress>
+                            <span class="progress-fill" data-progress-fill style={`width: ${100 / TOTAL}%`}></span>
+                        </div>
+                    </div>
+
+                    <form method="post" action="/start/submit" class="steps" data-form>
+                        {pageError && (
+                                <div class="alert nojs-only" role="alert">
+                                    <CircleAlert size={20} aria-hidden="true" class="shrink-0"/>
+                                    <p>
+                                        {pageError}
+                                        {(messenger || email) && (
+                                                <> If it keeps happening, reach me directly{messenger && <> on <a href={messenger}>Messenger</a></>}{messenger && email && " or"}{email && <> at <a href={`mailto:${email}`}>{email}</a></>}.</>
+                                        )}
+                                    </p>
+                                </div>
+                        )}
+
+                        {/* Where they came from. Filled on the server; the script tops up the referrer. */}
+                        <input type="hidden" name="utmSource" value={param("utm_source")}/>
+                        <input type="hidden" name="utmMedium" value={param("utm_medium")}/>
+                        <input type="hidden" name="utmCampaign" value={param("utm_campaign")}/>
+                        <input type="hidden" name="referrer" value={referrer} data-referrer/>
+                        <input type="hidden" name="landingPage" value={landingPage}/>
+                        <input type="hidden" name="ts" value={String(Date.now())}/>
+
+                        <div class="hp" aria-hidden="true">
+                            <label>
+                                Leave this empty
+                                <input type="text" name="website" tabindex="-1" autocomplete="off"/>
+                            </label>
+                        </div>
+
+                        {/* 1. Business type */}
+                        <fieldset class="step is-active" data-step data-auto-advance data-shortcuts>
+                            <legend>
+                                <p class="q-count nojs-only">Question 1 of {TOTAL}</p>
+                                <h2 class="q-title" tabindex="-1" data-step-title>What kind of business do you run?</h2>
+                            </legend>
+                            <div class="q-body">
+                                <p class="field-error group-error" data-error-for="businessType" id="err-businessType" hidden></p>
+                                <div class="options">
+                                    {businessTypes.map((option, i) => {
+                                        const Icon = typeIcons[option.value];
+                                        return (
+                                                <label class="opt">
+                                                    <input type="radio" name="businessType" value={option.value}
+                                                           required data-required-group
+                                                           data-other={option.value === "other" ? "" : undefined}/>
+                                                    <span class="opt-icon" aria-hidden="true"><Icon size={20}/></span>
+                                                    <span class="opt-text">
+                                                        <span class="opt-label">{option.label}</span>
+                                                        <span class="opt-hint">{option.hint}</span>
+                                                    </span>
+                                                    <kbd class="opt-key" aria-hidden="true">{i + 1}</kbd>
+                                                    <span class="opt-mark" aria-hidden="true"><Check size={14} stroke-width={3}/></span>
+                                                </label>
+                                        );
+                                    })}
+                                </div>
+                                <div class="other-field">
+                                    <label class="field-label" for="businessTypeOther">What kind of business?</label>
+                                    <input class="input" id="businessTypeOther" name="businessTypeOther" type="text"
+                                           maxlength={MAX.short} autocomplete="off"
+                                           placeholder="e.g. café, dental clinic, dive shop"
+                                           data-required-if="businessType=other"
+                                           data-msg="Tell me what kind of business it is."/>
+                                </div>
+                                <p class="field-error" data-error-for="businessTypeOther" id="err-businessTypeOther" hidden></p>
+                            </div>
+                            <div class="step-actions js-only">
+                                <button type="button" class="btn btn-primary" data-next>
+                                    Continue <ArrowRight size={18} aria-hidden="true" class="btn-arrow"/>
+                                </button>
+                                <span class="enter-hint">or press <kbd>Enter ↵</kbd></span>
+                            </div>
+                        </fieldset>
+
+                        {/* 2. Business name + link */}
+                        <fieldset class="step" data-step>
+                            <legend>
+                                <p class="q-count nojs-only">Question 2 of {TOTAL}</p>
+                                <h2 class="q-title" tabindex="-1" data-step-title>What’s your business called?</h2>
+                            </legend>
+                            <div class="q-body fields">
+                                <div>
+                                    <label class="field-label" for="businessName">Business name</label>
+                                    <input class="input" id="businessName" name="businessName" type="text" required
+                                           minlength="2" maxlength={MAX.name} autocomplete="organization"
+                                           placeholder="e.g. Sunrise Bakery"
+                                           data-msg="Add your business name."
+                                           aria-describedby="err-businessName"/>
+                                    <p class="field-error" data-error-for="businessName" id="err-businessName" hidden></p>
+                                </div>
+                                <div>
+                                    <label class="field-label" for="link">
+                                        Facebook page or website <span class="optional">(optional)</span>
+                                    </label>
+                                    <input class="input" id="link" name="link" type="text" inputmode="url"
+                                           maxlength={MAX.link} autocomplete="url" autocapitalize="off"
+                                           spellcheck="false" placeholder="facebook.com/yourpage"
+                                           aria-describedby="link-hint"/>
+                                    <p class="field-hint" id="link-hint">
+                                        So I can see what your customers see. It makes the audit far more useful.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="step-actions js-only">
+                                <button type="button" class="btn btn-primary" data-next>
+                                    Continue <ArrowRight size={18} aria-hidden="true" class="btn-arrow"/>
+                                </button>
+                                <span class="enter-hint">or press <kbd>Enter ↵</kbd></span>
+                            </div>
+                        </fieldset>
+
+                        {/* 3. Headaches */}
+                        <fieldset class="step" data-step data-shortcuts>
+                            <legend>
+                                <p class="q-count nojs-only">Question 3 of {TOTAL}</p>
+                                <h2 class="q-title" tabindex="-1" data-step-title>What’s giving you the most headaches right now?</h2>
+                                <p class="q-sub">Pick all that apply.</p>
+                            </legend>
+                            <div class="q-body">
+                                <p class="field-error group-error" data-error-for="painPoints" id="err-painPoints" hidden></p>
+                                <div class="options">
+                                    {painPoints.map((option, i) => {
+                                        const Icon = painIcons[option.value];
+                                        return (
+                                                <label class="opt">
+                                                    <input type="checkbox" name="painPoints" value={option.value}
+                                                           data-min-group
+                                                           data-other={option.value === "other" ? "" : undefined}/>
+                                                    <span class="opt-icon" aria-hidden="true"><Icon size={20}/></span>
+                                                    <span class="opt-text">
+                                                        <span class="opt-label">{option.label}</span>
+                                                        {"hint" in option && <span class="opt-hint">{option.hint}</span>}
+                                                    </span>
+                                                    <kbd class="opt-key" aria-hidden="true">{i + 1}</kbd>
+                                                    <span class="opt-mark square" aria-hidden="true"><Check size={14} stroke-width={3}/></span>
+                                                </label>
+                                        );
+                                    })}
+                                </div>
+                                <div class="other-field">
+                                    <label class="field-label" for="painOther">What else is slowing you down?</label>
+                                    <input class="input" id="painOther" name="painOther" type="text"
+                                           maxlength={MAX.other} autocomplete="off"
+                                           placeholder="e.g. no-shows, double bookings"/>
+                                </div>
+                            </div>
+                            <div class="step-actions js-only">
+                                <button type="button" class="btn btn-primary" data-next>
+                                    Continue <ArrowRight size={18} aria-hidden="true" class="btn-arrow"/>
+                                </button>
+                                <span class="enter-hint">or press <kbd>Enter ↵</kbd></span>
+                            </div>
+                        </fieldset>
+
+                        {/* 4–7. Single-choice questions */}
+                        {[
+                            {
+                                n: 4,
+                                name: "inquiryVolume",
+                                title: "Roughly how many customer inquiries or orders do you get in a week?",
+                                sub: "Across messages, calls, email and walk-ins. A guess is fine.",
+                                options: inquiryVolumes,
+                                cols: 2,
+                                msg: "Pick the closest range.",
+                            },
+                            {
+                                n: 5,
+                                name: "teamSize",
+                                title: "How many people are on your team?",
+                                sub: "Including you, and anyone who answers guests.",
+                                options: teamSizes,
+                                cols: 2,
+                                msg: "Pick your team size.",
+                            },
+                            {
+                                n: 6,
+                                name: "budget",
+                                title: "What budget do you have in mind for fixing this?",
+                                sub: null,
+                                options: budgets,
+                                cols: 1,
+                                msg: "Pick one. “Not sure yet” is fine.",
+                                note: "The audit is free either way. This just helps me suggest fixes that fit.",
+                            },
+                            {
+                                n: 7,
+                                name: "timeline",
+                                title: "When would you like this sorted?",
+                                sub: null,
+                                options: timelines,
+                                cols: 1,
+                                msg: "Pick one.",
+                            },
+                        ].map((q) => (
+                                <fieldset class="step" data-step data-auto-advance data-shortcuts>
+                                    <legend>
+                                        <p class="q-count nojs-only">Question {q.n} of {TOTAL}</p>
+                                        <h2 class="q-title" tabindex="-1" data-step-title>{q.title}</h2>
+                                        {q.sub && <p class="q-sub">{q.sub}</p>}
+                                    </legend>
+                                    <div class="q-body">
+                                        <p class="field-error group-error" data-error-for={q.name} id={`err-${q.name}`} hidden></p>
+                                        <div class:list={["options", q.cols === 2 && "cols-2"]}>
+                                            {q.options.map((option, i) => (
+                                                    <label class="opt">
+                                                        <input type="radio" name={q.name} value={option.value}
+                                                               required data-required-group data-msg={q.msg}/>
+                                                        <span class="opt-text">
+                                                            <span class="opt-label">{option.label}</span>
+                                                        </span>
+                                                        <kbd class="opt-key" aria-hidden="true">{i + 1}</kbd>
+                                                        <span class="opt-mark" aria-hidden="true"><Check size={14} stroke-width={3}/></span>
+                                                    </label>
+                                            ))}
+                                        </div>
+                                        {q.note && (
+                                                <p class="q-note">
+                                                    <Gift size={18} aria-hidden="true"/>
+                                                    {q.note}
+                                                </p>
+                                        )}
+                                    </div>
+                                    <div class="step-actions js-only">
+                                        <button type="button" class="btn btn-primary" data-next>
+                                            Continue <ArrowRight size={18} aria-hidden="true" class="btn-arrow"/>
+                                        </button>
+                                        <span class="enter-hint">or press <kbd>Enter ↵</kbd></span>
+                                    </div>
+                                </fieldset>
+                        ))}
+
+                        {/* 8. Contact + consent */}
+                        <fieldset class="step" data-step data-last>
+                            <legend>
+                                <p class="q-count nojs-only">Question 8 of {TOTAL}</p>
+                                <h2 class="q-title" tabindex="-1" data-step-title>Where should I send your audit?</h2>
+                                <p class="q-sub">Last one. I’ll only use this to send your audit and follow up about it.</p>
+                            </legend>
+                            <div class="q-body fields">
+                                <div>
+                                    <label class="field-label" for="contactName">Your name</label>
+                                    <input class="input" id="contactName" name="contactName" type="text" required
+                                           maxlength={MAX.short} autocomplete="name" placeholder="First and last name"
+                                           data-msg="Add your name." aria-describedby="err-contactName"/>
+                                    <p class="field-error" data-error-for="contactName" id="err-contactName" hidden></p>
+                                </div>
+                                <div>
+                                    <label class="field-label" for="contactHandle">Mobile number or Messenger name</label>
+                                    <input class="input" id="contactHandle" name="contactHandle" type="text" required
+                                           minlength="3" maxlength={MAX.handle} autocomplete="tel"
+                                           placeholder="0917 123 4567 or your Messenger name"
+                                           data-msg="Add a mobile number or your Messenger name."
+                                           aria-describedby="err-contactHandle"/>
+                                    <p class="field-error" data-error-for="contactHandle" id="err-contactHandle" hidden></p>
+                                </div>
+                                <div>
+                                    <label class="field-label" for="email">
+                                        Email <span class="optional">(optional)</span>
+                                    </label>
+                                    <input class="input" id="email" name="email" type="email" maxlength={MAX.email}
+                                           autocomplete="email" autocapitalize="off" spellcheck="false"
+                                           placeholder="you@yourbusiness.com"
+                                           data-required-if="preferredContact=email"
+                                           data-msg="Add your email, or pick another way to reach you."
+                                           aria-describedby="err-email"/>
+                                    <p class="field-error" data-error-for="email" id="err-email" hidden></p>
+                                </div>
+                                <fieldset>
+                                    <legend class="field-label">How should I reach you?</legend>
+                                    <div class="chips">
+                                        {contactMethods.map((option, i) => (
+                                                <label class="chip">
+                                                    <input type="radio" name="preferredContact" value={option.value}
+                                                           required data-required-group checked={i === 0}
+                                                           data-msg="Choose how I should reach you."/>
+                                                    {option.label}
+                                                </label>
+                                        ))}
+                                    </div>
+                                    <p class="field-error" data-error-for="preferredContact" id="err-preferredContact" hidden></p>
+                                </fieldset>
+
+                                <div>
+                                    <label class="consent">
+                                        <input type="checkbox" name="consent" value="yes" required
+                                               data-msg="Please tick this so I can store your answers and contact you."
+                                               aria-describedby="err-consent"/>
+                                        <span class="opt-mark square" aria-hidden="true"><Check size={14} stroke-width={3}/></span>
+                                        <span class="consent-text">
+                                            I agree to Cris Lucero storing these answers to prepare my audit and
+                                            contacting me about it, as explained below.
+                                        </span>
+                                    </label>
+                                    <p class="field-error" data-error-for="consent" id="err-consent" hidden></p>
+
+                                    <details class="privacy">
+                                        <summary>
+                                            <ShieldCheck size={16} aria-hidden="true"/>
+                                            How I handle your data (RA 10173)
+                                        </summary>
+                                        <div class="privacy-body">
+                                            <p>
+                                                <strong class="text-zinc-200">What I collect:</strong> your answers on
+                                                this page, your contact details, and which link brought you here.
+                                            </p>
+                                            <p>
+                                                <strong class="text-zinc-200">Why:</strong> only to prepare your audit
+                                                and follow up about it. It’s kept in my private admin, and never sold
+                                                or shared.
+                                            </p>
+                                            <p>
+                                                <strong class="text-zinc-200">Your rights:</strong> under the Data
+                                                Privacy Act of 2012 (RA 10173) you can ask to see, correct or delete
+                                                your data at any time. Just reply to any message from
+                                                me{messenger && <>, message me on <a href={messenger} target="_blank" rel="noopener noreferrer">Messenger</a></>}{email && <>, or email <a href={`mailto:${email}`}>{email}</a></>},
+                                                and I’ll take care of it.
+                                            </p>
+                                        </div>
+                                    </details>
+                                </div>
+                            </div>
+
+                            <div class="alert" data-submit-error role="alert" hidden>
+                                <CircleAlert size={20} aria-hidden="true" class="shrink-0"/>
+                                <p>
+                                    <span data-submit-error-text>Sorry, your answers didn’t go through.</span>
+                                    {(messenger || email) ? (
+                                            <> Please try again, or reach me directly{messenger && <> on <a href={messenger} target="_blank" rel="noopener noreferrer">Messenger</a></>}{messenger && email && " or"}{email && <> at <a href={`mailto:${email}`}>{email}</a></>}.</>
+                                    ) : <> Please try again in a moment.</>}
+                                </p>
+                            </div>
+
+                            <div class="step-actions">
+                                <button type="submit" class="btn btn-primary" data-submit>
+                                    Send me my free audit
+                                    <ArrowRight size={18} aria-hidden="true" class="btn-arrow"/>
+                                    <LoaderCircle size={18} aria-hidden="true" class="spinner"/>
+                                </button>
+                            </div>
+                            <p class="fine-print">No spam and no newsletter. Just your audit.</p>
+                        </fieldset>
+                    </form>
+
+                    <section class="js-only" data-thanks hidden aria-live="polite">
+                        <FunnelThanks/>
+                    </section>
+                </div>
+            </section>
+        </div>
+    </div>
+</Layout>
+
+<script>
+    type Step = HTMLElement;
+
+    const root = document.querySelector<HTMLElement>("[data-funnel]");
+    const form = root?.querySelector<HTMLFormElement>("[data-form]");
+    if (root && form) init(root, form);
+
+    function init(root: HTMLElement, form: HTMLFormElement) {
+        const steps = [...form.querySelectorAll<Step>("[data-step]")];
+        const total = steps.length;
+        const header = root.querySelector<HTMLElement>("[data-quiz-header]")!;
+        const backBtn = root.querySelector<HTMLButtonElement>("[data-back]")!;
+        const count = root.querySelector<HTMLElement>("[data-count]")!;
+        const progress = root.querySelector<HTMLElement>("[data-progress]")!;
+        const fill = root.querySelector<HTMLElement>("[data-progress-fill]")!;
+        const submitBtn = form.querySelector<HTMLButtonElement>("[data-submit]")!;
+        const submitError = form.querySelector<HTMLElement>("[data-submit-error]")!;
+        const thanks = root.querySelector<HTMLElement>("[data-thanks]")!;
+        const quiz = root.querySelector<HTMLElement>(".quiz")!;
+        const desktop = matchMedia("(min-width: 1024px)");
+        const finePointer = matchMedia("(pointer: fine)");
+        const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+
+        let current = 0;
+        let busy = false;
+        // How the last answer was picked. Arrow keys also change a radio, and
+        // that must not jump to the next question.
+        let lastInput: "pointer" | "keyboard" | "shortcut" = "keyboard";
+
+        form.noValidate = true;
+
+        // The server sees the referrer too, but in-app browsers sometimes drop it.
+        const ref = form.querySelector<HTMLInputElement>("[data-referrer]");
+        if (ref && !ref.value && document.referrer) ref.value = document.referrer.slice(0, 500);
+
+        // Back/forward buttons (and Android's back gesture) move between
+        // questions instead of leaving the page and losing the answers.
+        history.replaceState({...(history.state ?? {}), funnel: desktop.matches ? 0 : "intro"}, "");
+
+        const view = (name: "intro" | "quiz" | "done") => (root.dataset.view = name);
+        if (desktop.matches) view("quiz");
+
+        const scrollToQuiz = () => {
+            const top = quiz.getBoundingClientRect().top + window.scrollY - 16;
+            if (window.scrollY > top || !desktop.matches) {
+                window.scrollTo({top: Math.max(0, top), behavior: reducedMotion.matches ? "auto" : "smooth"});
+            }
+        };
+
+        const focusStep = (step: Step) => {
+            const firstText = step.querySelector<HTMLInputElement>("input.input:not([type=hidden])");
+            // Only jump into a text box where it won't pop up a phone keyboard.
+            if (firstText && finePointer.matches && !firstText.closest(".other-field")) {
+                firstText.focus({preventScroll: true});
+            } else {
+                step.querySelector<HTMLElement>("[data-step-title]")?.focus({preventScroll: true});
+            }
+        };
+
+        function show(index: number, dir: "forward" | "back" = "forward", focus = true) {
+            steps[current]?.classList.remove("is-active");
+            current = Math.max(0, Math.min(index, total - 1));
+            const step = steps[current];
+            root.dataset.dir = dir;
+            // Restart the entrance animation.
+            step.classList.remove("is-active");
+            void step.offsetWidth;
+            step.classList.add("is-active");
+
+            const n = current + 1;
+            fill.style.width = `${(n / total) * 100}%`;
+            progress.setAttribute("aria-valuenow", String(n));
+            count.textContent = `${n} of ${total}`;
+            // On desktop there's nothing before question 1; on phones Back returns to the intro.
+            backBtn.setAttribute("aria-disabled", String(current === 0 && desktop.matches));
+
+            if (focus) {
+                scrollToQuiz();
+                focusStep(step);
+            }
+        }
+
+        // ---------- Validation ----------
+
+        type Problem = { name: string; message: string; el: HTMLElement };
+        const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        const valueOf = (name: string) => {
+            const el = form.elements.namedItem(name);
+            if (el instanceof RadioNodeList) return el.value;
+            return el instanceof HTMLInputElement ? el.value.trim() : "";
+        };
+
+        function problemsIn(step: Step): Problem[] {
+            const problems: Problem[] = [];
+            const seen = new Set<string>();
+
+            step.querySelectorAll<HTMLInputElement>("input[data-required-group]").forEach((input) => {
+                if (seen.has(input.name)) return;
+                seen.add(input.name);
+                if (!valueOf(input.name)) {
+                    problems.push({
+                        name: input.name,
+                        message: input.dataset.msg ?? "Pick one to continue.",
+                        el: input,
+                    });
+                }
+            });
+
+            const group = step.querySelectorAll<HTMLInputElement>("input[data-min-group]");
+            if (group.length && ![...group].some((i) => i.checked)) {
+                problems.push({name: group[0].name, message: "Pick at least one.", el: group[0]});
+            }
+
+            step.querySelectorAll<HTMLInputElement>("input.input, input[name=consent]").forEach((input) => {
+                const value = input.value.trim();
+                const condition = input.dataset.requiredIf?.split("=");
+                const required = input.required || (condition && valueOf(condition[0]) === condition[1]);
+                let message = "";
+                if (input.type === "checkbox") {
+                    if (input.required && !input.checked) message = input.dataset.msg ?? "Please tick this box.";
+                } else if (required && !value) {
+                    message = input.dataset.msg ?? "This one’s needed.";
+                } else if (value && input.minLength > 0 && value.length < input.minLength) {
+                    message = input.dataset.msg ?? "That looks too short.";
+                } else if (value && input.type === "email" && !EMAIL_RE.test(value)) {
+                    message = "That email address doesn’t look right.";
+                }
+                if (message) problems.push({name: input.name, message, el: input});
+            });
+
+            return problems;
+        }
+
+        function clearErrors(step: Step) {
+            step.querySelectorAll<HTMLElement>("[data-error-for]").forEach((p) => {
+                p.hidden = true;
+                p.textContent = "";
+            });
+            step.querySelectorAll("[aria-invalid]").forEach((el) => el.removeAttribute("aria-invalid"));
+        }
+
+        function showErrors(step: Step, problems: { name: string; message: string }[]) {
+            clearErrors(step);
+            for (const {name, message} of problems) {
+                const slot = step.querySelector<HTMLElement>(`[data-error-for="${name}"]`);
+                if (slot) {
+                    slot.textContent = message;
+                    slot.hidden = false;
+                }
+                step.querySelectorAll<HTMLInputElement>(`[name="${name}"]`).forEach((el) => {
+                    el.setAttribute("aria-invalid", "true");
+                    if (!el.getAttribute("aria-describedby")) el.setAttribute("aria-describedby", `err-${name}`);
+                });
+            }
+        }
+
+        function validate(step: Step): boolean {
+            const problems = problemsIn(step);
+            if (problems.length === 0) {
+                clearErrors(step);
+                return true;
+            }
+            showErrors(step, problems);
+            problems[0].el.focus({preventScroll: false});
+            return false;
+        }
+
+        // Clear a field's error as soon as it's fixed.
+        form.addEventListener("input", (event) => {
+            const target = event.target as HTMLInputElement;
+            if (!target.name) return;
+            const step = target.closest<Step>("[data-step]");
+            if (!step || !step.querySelector(`[data-error-for="${target.name}"]:not([hidden])`)) return;
+            if (!problemsIn(step).some((p) => p.name === target.name)) {
+                const slot = step.querySelector<HTMLElement>(`[data-error-for="${target.name}"]`)!;
+                slot.hidden = true;
+                step.querySelectorAll(`[name="${target.name}"]`).forEach((el) => el.removeAttribute("aria-invalid"));
+            }
+        });
+
+        // ---------- Navigation ----------
+
+        function next() {
+            if (busy) return;
+            const step = steps[current];
+            if (!validate(step)) return;
+            if (step.hasAttribute("data-last")) {
+                void submit();
+                return;
+            }
+            history.pushState({...(history.state ?? {}), funnel: current + 1}, "");
+            show(current + 1, "forward");
+        }
+
+        function back() {
+            if (busy) return;
+            if (current === 0 && desktop.matches) return;
+            history.back();
+        }
+
+        window.addEventListener("popstate", (event) => {
+            if (root.dataset.view === "done") return;
+            const target = (event.state as { funnel?: number | "intro" } | null)?.funnel;
+            if (target === "intro" || target === undefined) {
+                if (desktop.matches) {
+                    show(0, "back");
+                } else {
+                    view("intro");
+                    window.scrollTo({top: 0});
+                    root.querySelector<HTMLElement>("[data-start]")?.focus({preventScroll: true});
+                }
+                return;
+            }
+            view("quiz");
+            show(target, target < current ? "back" : "forward");
+        });
+
+        root.querySelectorAll("[data-start]").forEach((button) => button.addEventListener("click", () => {
+            history.pushState({...(history.state ?? {}), funnel: 0}, "");
+            view("quiz");
+            show(0, "forward");
+        }));
+
+        backBtn.addEventListener("click", back);
+        form.querySelectorAll("[data-next]").forEach((b) => b.addEventListener("click", next));
+
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            next();
+        });
+
+        // ---------- Picking answers ----------
+
+        form.addEventListener("pointerdown", () => (lastInput = "pointer"));
+        form.addEventListener("keydown", () => (lastInput = "keyboard"), {capture: true});
+
+        let advanceTimer = 0;
+        form.addEventListener("change", (event) => {
+            const input = event.target as HTMLInputElement;
+            const step = input.closest<Step>("[data-step]");
+            if (!step || input.type !== "radio" || !step.hasAttribute("data-auto-advance")) return;
+
+            if (input.hasAttribute("data-other")) {
+                // "Other" needs a few words first.
+                if (lastInput !== "keyboard") {
+                    setTimeout(() => step.querySelector<HTMLInputElement>(".other-field input")?.focus(), 0);
+                }
+                return;
+            }
+            if (lastInput === "keyboard") return;
+            window.clearTimeout(advanceTimer);
+            advanceTimer = window.setTimeout(() => {
+                if (steps[current] === step && input.checked) next();
+            }, 320);
+        });
+
+        // Typing a number picks that option; Enter moves on.
+        document.addEventListener("keydown", (event) => {
+            if (root.dataset.view === "done" || (!desktop.matches && root.dataset.view !== "quiz")) return;
+            if (event.metaKey || event.ctrlKey || event.altKey) return;
+            const target = event.target as HTMLElement;
+            const typing = target.matches("input.input, textarea");
+            const step = steps[current];
+
+            if (event.key === "Enter") {
+                if (target.matches("button, a, summary")) return;
+                if (!form.contains(target) && target !== document.body) return;
+                event.preventDefault();
+                next();
+                return;
+            }
+
+            if (typing || !step.hasAttribute("data-shortcuts") || !/^[1-9]$/.test(event.key)) return;
+            const inputs = step.querySelectorAll<HTMLInputElement>(".opt input");
+            const input = inputs[Number(event.key) - 1];
+            if (!input) return;
+            event.preventDefault();
+            lastInput = "shortcut";
+            input.checked = input.type === "radio" ? true : !input.checked;
+            input.focus({preventScroll: true});
+            input.dispatchEvent(new Event("change", {bubbles: true}));
+            input.dispatchEvent(new Event("input", {bubbles: true}));
+            lastInput = "shortcut";
+        });
+
+        // ---------- Sending ----------
+
+        async function submit() {
+            // Every question, in case someone jumped ahead with the browser's forward button.
+            for (let i = 0; i < total; i++) {
+                if (problemsIn(steps[i]).length) {
+                    show(i, "back");
+                    validate(steps[i]);
+                    return;
+                }
+            }
+
+            busy = true;
+            submitBtn.setAttribute("aria-busy", "true");
+            submitBtn.disabled = true;
+            submitError.hidden = true;
+
+            try {
+                const res = await fetch(form.action, {
+                    method: "POST",
+                    body: new FormData(form),
+                    headers: {Accept: "application/json"},
+                });
+                const data = (await res.json().catch(() => null)) as {
+                    ok?: boolean;
+                    firstName?: string;
+                    message?: string;
+                    errors?: Record<string, string>;
+                } | null;
+
+                if (res.ok && data?.ok) {
+                    done(data.firstName);
+                    return;
+                }
+
+                if (res.status === 422 && data?.errors) {
+                    const names = Object.keys(data.errors);
+                    const index = steps.findIndex((s) => names.some((n) => s.querySelector(`[name="${n}"]`)));
+                    if (index >= 0) {
+                        show(index, "back");
+                        const step = steps[index];
+                        showErrors(step, names.filter((n) => step.querySelector(`[name="${n}"]`))
+                            .map((n) => ({name: n, message: data.errors![n]})));
+                        return;
+                    }
+                }
+
+                const text = submitError.querySelector("[data-submit-error-text]")!;
+                text.textContent = res.status === 429
+                    ? "That was a lot of submissions in a row. Please wait a few minutes."
+                    : "Sorry, your answers didn’t go through.";
+                submitError.hidden = false;
+            } catch {
+                submitError.hidden = false;
+            } finally {
+                busy = false;
+                submitBtn.removeAttribute("aria-busy");
+                submitBtn.disabled = false;
+            }
+        }
+
+        function done(firstName?: string) {
+            view("done");
+            form.hidden = true;
+            header.hidden = true;
+            thanks.hidden = false;
+            const greeting = thanks.querySelector<HTMLElement>("[data-thanks-greeting]");
+            if (greeting && firstName) greeting.textContent = `Thank you, ${firstName}.`;
+            history.replaceState({funnel: "done"}, "");
+            window.scrollTo({top: 0});
+            thanks.querySelector<HTMLElement>("#thanks-title")?.focus({preventScroll: true});
+        }
+
+        show(0, "forward", false);
+    }
+</script>

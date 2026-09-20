@@ -1,26 +1,36 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import ConceptBadge from "../components/ConceptBadge.astro";
 import {ArrowRight} from "@lucide/astro";
-import type {Project} from "@backend";
-import {CMS_URL, asMedia, sizedUrl} from "../lib/cms";
-let projects: Project[] = [];
+import {CMS_PAGE_CACHE_CONTROL, altText, asMedia, fetchProjects, imageAttrs, sizedUrl} from "../lib/cms";
 
-try {
-    const response = await fetch(`${CMS_URL}/api/projects?depth=1`);
-    const data = await response.json();
-    projects = data.docs || [];
-} catch (error) {
-    console.error("Failed to fetch projects from Payload:", error);
+const result = await fetchProjects();
+const projects = result.ok ? result.data : [];
+
+// Only a successful render is cached at the edge; an outage answers 503 so
+// the empty list is neither cached nor indexed.
+if (result.ok) {
+    Astro.response.headers.set("Cache-Control", CMS_PAGE_CACHE_CONTROL);
+} else {
+    Astro.response.status = 503;
+    Astro.response.headers.set("Retry-After", "60");
 }
+
+// The image column is half the 1280px container (minus padding and gap) on
+// desktop and full width below lg.
+const imageUrls = projects.map((p) => sizedUrl(asMedia(p.featuredImage), 900));
+
+const FEATURED_SIZES =
+    "(min-width: 1280px) 572px, (min-width: 1024px) calc(50vw - 68px), (min-width: 768px) calc(100vw - 96px), calc(100vw - 48px)";
 ---
 
 <Layout
         title="Projects | Cris Lucero"
-        description="Selected work — a cafe discovery platform, a pickleball tournament system, an event platform, a commerce storefront and a D2C travel brand."
+        imageUrls={imageUrls}
+        description="Selected work by Cris Lucero, a web and app developer in Cebu, Philippines — a cafe discovery app, a pickleball tournament system, an event platform, a commerce storefront and a D2C travel brand."
 >
 
-
-<div class="mx-auto h-full max-w-7xl px-6 py-20 md:px-12 md:py-40">
+<div class="mx-auto max-w-7xl px-6 py-20 md:px-12 md:py-40">
 
     <div class="flex flex-col gap-4 w-full">
         <h1 class="text-3xl font-semibold">Products businesses run on.</h1>
@@ -32,59 +42,77 @@ try {
 
     <div class="mt-10 md:mt-16 flex flex-col gap-16">
 
-        {projects.length === 0 && (
-                <p class="text-zinc-500">No projects found. Make sure the Payload server is running.</p>
+        {!result.ok && (
+                <p class="max-w-xl text-zinc-400">
+                    The projects couldn't be loaded just now. Please refresh the page, or check back in a few minutes.
+                </p>
         )}
 
-        {projects.map((project) => (
-                <div class="flex flex-col-reverse lg:flex-row gap-10">
-                    <div class="flex-1 flex flex-col gap-4">
+        {result.ok && projects.length === 0 && (
+                <p class="text-zinc-400">New case studies are on the way.</p>
+        )}
 
-                        {/* Logo Handling */}
-                        {project.logo && typeof project.logo !== 'string' && project.logo.url && (
-                                <img
-                                        src={sizedUrl(asMedia(project.logo), 200)}
-                                        loading="lazy"
-                                        alt={`${project.title} logo`}
-                                        class:list={["object-contain",
-                                            project.logo.width && project.logo.height && project.logo.width / project.logo.height > 4
-                                                ? "w-56" : "w-20"]}
-                                />
-                        )}
+        {projects.map((project, index) => {
+            const logo = asMedia(project.logo);
+            const featured = imageAttrs(asMedia(project.featuredImage));
+            // The first card's image is the largest thing above the fold (LCP),
+            // so it loads eagerly at high priority; the rest wait until scrolled to.
+            const isFirst = index === 0;
 
-                        <div class="flex flex-col gap-3">
-                            <h2 class="text-lg">{project.subtitle}</h2>
-                            <p class="border-t border-t-zinc-500 py-3 text-zinc-300">
-                                {project.shortDescription}
-                            </p>
+            return (
+                    <div class="flex flex-col-reverse lg:flex-row gap-10">
+                        <div class="flex-1 flex flex-col gap-4">
+
+                            {logo?.url && (
+                                    <img
+                                            src={sizedUrl(logo, 200)}
+                                            loading={isFirst ? "eager" : "lazy"}
+                                            alt={`${project.title} logo`}
+                                            width={logo.width ?? undefined}
+                                            height={logo.height ?? undefined}
+                                            class:list={["h-auto object-contain",
+                                                logo.width && logo.height && logo.width / logo.height > 4
+                                                    ? "w-56" : "w-20"]}
+                                    />
+                            )}
+
+                            <div class="flex flex-col gap-3">
+                                {project.isConcept && <ConceptBadge/>}
+                                <h2 class="text-lg">{project.subtitle}</h2>
+                                <p class="border-t border-t-zinc-500 py-3 text-zinc-300">
+                                    {project.shortDescription}
+                                </p>
+                            </div>
+
+                            <a href={`/projects/${project.slug}`} class="group w-fit">
+                                <div class="flex items-center gap-2">
+                                    <p class="text-white font-medium border-b border-transparent group-hover:border-white transition-colors duration-300">
+                                        {project.cardLinkText || "View Project"}
+                                    </p>
+                                    <ArrowRight
+                                            class="w-5 h-5 text-white transition-transform group-hover:translate-x-1 duration-300"/>
+                                </div>
+                            </a>
+
                         </div>
 
-                        <a href={`/projects/${project.slug}`} class="group w-fit">
-                            <div class="flex items-center gap-2">
-                                <p class="text-white font-medium border-b border-transparent group-hover:border-white transition-colors duration-300">
-                                    {project.cardLinkText || "View Project"}
-                                </p>
-                                <ArrowRight
-                                        class="w-5 h-5 text-white transition-transform group-hover:translate-x-1 duration-300"/>
-                            </div>
-                        </a>
-
+                        <div class="flex-1 flex rounded-lg">
+                            {featured && (
+                                    <img
+                                            {...featured}
+                                            sizes={FEATURED_SIZES}
+                                            loading={isFirst ? "eager" : "lazy"}
+                                            fetchpriority={isFirst ? "high" : undefined}
+                                            decoding={isFirst ? undefined : "async"}
+                                            alt={altText(asMedia(project.featuredImage), project.title)}
+                                            class="rounded-lg object-cover w-full h-auto"
+                                    />
+                            )}
+                        </div>
                     </div>
-
-                    <div class="flex-1 flex rounded-lg">
-                        {project.featuredImage && typeof project.featuredImage !== 'string' && project.featuredImage.url && (
-                                <img
-                                        src={sizedUrl(asMedia(project.featuredImage), 900)}
-                                        loading="lazy"
-                                        alt={project.title}
-                                        class="rounded-lg object-cover w-full h-auto"
-                                />
-                        )}
-                    </div>
-                </div>
-            ))}
+            );
+        })}
     </div>
 </div>
-
 
 </Layout>

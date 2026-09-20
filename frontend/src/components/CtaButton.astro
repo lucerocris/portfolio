@@ -1,0 +1,36 @@
+---
+/**
+ * The primary call to action: the free audit at /start (see primaryCta in
+ * src/lib/site.ts).
+ */
+import {primaryCta} from "../lib/site";
+
+interface Props {
+    size?: "sm" | "md";
+    class?: string;
+    /** Shorter label below the `sm` breakpoint, for the nav on phones. */
+    compactLabel?: string;
+}
+
+const {size = "md", class: className, compactLabel} = Astro.props;
+const cta = primaryCta();
+---
+
+{cta && (
+    <a
+            href={cta.href}
+            {...(cta.external ? {target: "_blank", rel: "noopener noreferrer"} : {})}
+            class:list={[
+                "inline-flex w-fit items-center justify-center rounded-full bg-white font-medium whitespace-nowrap text-[#151419] transition-colors hover:bg-zinc-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white",
+                size === "sm" ? "px-3 py-1.5 text-sm sm:px-4" : "px-6 py-3",
+                className,
+            ]}
+    >
+        {compactLabel ? (
+                <>
+                    <span class="sm:hidden">{compactLabel}</span>
+                    <span class="hidden sm:inline">{cta.label}</span>
+                </>
+        ) : cta.label}
+    </a>
+)}

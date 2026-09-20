@@ -10,6 +10,8 @@ loadEnv();
 
 // https://astro.build/config
 export default defineConfig({
+    // The floating dev toolbar sits over the footer on small screens.
+    devToolbar: { enabled: false },
     // Absolute base for canonical URLs, Open Graph tags and the sitemap.
     // Set PUBLIC_SITE_URL in production — localhost is only a dev fallback.
     site: process.env.PUBLIC_SITE_URL || 'http://localhost:4321',

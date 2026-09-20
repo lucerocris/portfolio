@@ -1,32 +1,32 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import {ArrowRight, Github, Instagram, Facebook, Linkedin} from "@lucide/astro";
+import WorkWithMe from "../components/WorkWithMe.astro";
+import {ArrowRight, ChevronDown, Download, MapPin} from "@lucide/astro";
+import {site} from "../lib/site";
 
+// No per-request data, so this page is built once and served from the CDN.
+export const prerender = true;
+
+// Written for business owners: outcomes first, no jargon.
 const services = [
     {
-        title: "Build it end to end",
-        body:
-            "Database, API, interface and admin, delivered by one person. You get a working product rather " +
-            "than pieces to assemble.",
+        title: "Websites that bring in customers",
+        body: "Fast, clear and easy to find, built to turn visitors into customers.",
     },
     {
-        title: "Web, mobile and commerce",
-        body:
-            "Marketing sites, web applications, mobile apps and online stores — whatever shape the product " +
-            "needs to take to reach your customers.",
+        title: "Custom software for your business",
+        body: "Tools built around how you work, so running your business gets simpler.",
     },
     {
-        title: "Built to run day to day",
-        body:
-            "Admin tools, dashboards and reporting, so your team can manage the product themselves without " +
-            "a developer for every change.",
+        title: "Automation that saves time",
+        body: "Repetitive work handled automatically, so your team can focus on customers.",
     },
 ];
 
 const stack = [
     {
         label: "Languages",
-        items: ["TypeScript", "JavaScript", "PHP", "Dart"],
+        items: ["TypeScript", "JavaScript", "Python", "PHP", "Dart"],
     },
     {
         label: "Frontend",
@@ -34,71 +34,115 @@ const stack = [
     },
     {
         label: "Backend & data",
-        items: ["Node.js", "Payload CMS", "CodeIgniter", "Supabase", "PostgreSQL", "MongoDB", "MySQL", "Redis"],
+        items: ["Node.js", "FastAPI", "Payload CMS", "CodeIgniter", "Supabase", "PostgreSQL", "MongoDB", "MySQL", "Redis"],
     },
     {
         label: "Platform",
-        items: ["DigitalOcean", "Vercel", "Shopify", "Pusher", "PostHog"],
+        items: ["DigitalOcean", "Vercel", "Shopify", "Pusher", "PostHog", "Playwright", "n8n"],
     },
 ];
 
-const socials = [
-    {href: "https://github.com/lucerocris", label: "GitHub", Icon: Github},
-    {href: "https://www.linkedin.com/in/cris-lawrence-lucero-29639433b/", label: "LinkedIn", Icon: Linkedin},
-    {href: "https://www.instagram.com/crislucero22/", label: "Instagram", Icon: Instagram},
-    {href: "https://www.facebook.com/crislawrence.lucero", label: "Facebook", Icon: Facebook},
+// Career so far, newest first. Evo Tech work is under NDA: say what the
+// automation does, never whose systems (see ~/personal/business/cv/README.md).
+const experience = [
+    {
+        role: "Independent Developer",
+        org: "Websites, software & automation",
+        when: "Jun 2026 – Present",
+        body: "My own practice, building for businesses from first call to launch. Recent work: a Shopify store for an Australian retail brand.",
+    },
+    {
+        role: "Software Engineer Intern, Automation",
+        org: "Evo Tech Software Solutions",
+        when: "Aug 2026 – Aug 2027",
+        body: "Building automations that take repetitive manual work off an e-commerce operations team: they watch client stores, flag problems as they happen, and prepare each one as a ready-to-work task.",
+    },
+    {
+        role: "Platform Maintainer & Tech Lead",
+        org: "PickleRank PH",
+        when: "Jul 2026 – Present",
+        type: "Part-time",
+        body: "Run and improve the ranking and tournament platform, including online payments, and lead the tech team on tournament days.",
+    },
+    {
+        role: "Software Developer",
+        org: "Pocket Concerts",
+        when: "Oct 2025",
+        body: "Built the registration and QR check-in system for a concert with 600 registrants.",
+    },
 ];
+
+// The headline tools, shown up front; the full list sits behind a toggle.
+const highlights = ["TypeScript", "Python", "Next.js", "React", "Flutter", "Supabase", "PostgreSQL", "Shopify"];
 ---
 
 <Layout
         title="About | Cris Lucero"
-        description="Cris Lucero — software developer building web, mobile and commerce products end to end, from database schema to shipped interface."
+        description="Cris Lucero is a web and app developer in Cebu, Philippines, helping businesses win customers and run smoothly with websites, apps and custom business systems."
 >
 
 
-<div class="mx-auto h-full max-w-7xl px-6 py-20 md:px-12 md:py-40">
+<div class="mx-auto max-w-7xl px-6 py-20 md:px-12 md:py-40">
 
     <div class="flex flex-col gap-16 md:gap-24">
 
         {/* Intro */}
         <section class="flex flex-col gap-6">
             <div class="h-18 w-18 rounded-full">
-                <img src="/profile.webp" alt="Cris Lucero" class="h-full w-full rounded-full object-cover">
+                <img src="/avatar.webp" alt="Portrait of Cris Lucero" width="72" height="72" class="h-full w-full rounded-full object-cover">
             </div>
 
-            <h1 class="text-3xl font-bold md:text-5xl">About</h1>
-
-            <div class="flex max-w-2xl flex-col gap-4 text-zinc-400">
-                <p>
-                    I'm Cris Lucero. I build the software businesses run on — the product customers use and the
-                    back office that keeps it working — and I take it from empty repository to live.
-                </p>
-                <p>
-                    That means one person accountable for the whole thing, rather than coordinating separate
-                    specialists and owning the gaps between them.
-                </p>
-                <p>
-                    An event platform that handled 600 registrations and ran check-in on the night. A tournament
-                    system carried to production and maintained since. A cafe platform where owners manage their
-                    own listing, menu and photos, and see how customers are finding them.
+            <div class="flex flex-col gap-3">
+                <h1 class="text-3xl font-bold md:text-5xl">Hi, I'm Cris.</h1>
+                <p class="flex items-center gap-2 text-sm text-zinc-400">
+                    <MapPin size={16} aria-hidden="true"/>
+                    Based in {site.location}
                 </p>
             </div>
 
-            <a href="/projects" class="group w-fit">
-                <div class="flex items-center gap-2">
-                    <p class="border-b border-transparent font-medium text-white transition-colors duration-300 group-hover:border-white">
-                        See the work
-                    </p>
-                    <ArrowRight
-                            class="h-5 w-5 text-white transition-transform duration-300 group-hover:translate-x-1"/>
-                </div>
-            </a>
+            <div class="flex max-w-2xl flex-col gap-4 text-zinc-400 md:text-lg">
+                <p class="text-zinc-300">
+                    I help businesses win more customers and run smoothly behind the scenes.
+                </p>
+                <p>
+                    Tell me what's slowing your business down, and I'll build the website, app or automation that
+                    fixes it. You work with me directly, from the first call to launch and after, with no hand-offs
+                    and no tech jargon.
+                </p>
+                <p>
+                    I've built an event platform that handled 600 registrations in one night, run the tournament and
+                    payment system for PickleRank PH, and launched Nook, a café app on the App Store.
+                </p>
+                <p class="text-sm">Computer Science at the University of San Carlos · Dean's Lister</p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-x-8 gap-y-4">
+                <a href="/projects" class="group w-fit">
+                    <div class="flex items-center gap-2">
+                        <p class="border-b border-transparent font-medium text-white transition-colors duration-300 group-hover:border-white">
+                            See the work
+                        </p>
+                        <ArrowRight
+                                class="h-5 w-5 text-white transition-transform duration-300 group-hover:translate-x-1"/>
+                    </div>
+                </a>
+                {site.cvPath && (
+                        <a href={site.cvPath} download class="group w-fit">
+                            <div class="flex items-center gap-2">
+                                <Download class="h-5 w-5 text-zinc-300" aria-hidden="true"/>
+                                <p class="border-b border-transparent text-zinc-300 transition-colors duration-300 group-hover:border-zinc-300">
+                                    Download CV (PDF)
+                                </p>
+                            </div>
+                        </a>
+                )}
+            </div>
         </section>
 
         {/* Value */}
         <section class="flex flex-col gap-6">
-            <h2 class="border-b border-zinc-500 pb-3 text-sm tracking-wide text-zinc-500 uppercase">
-                How I help
+            <h2 class="border-b border-zinc-500 pb-3 text-sm tracking-wide text-zinc-400 uppercase">
+                What I can do for you
             </h2>
 
             <div class="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-8">
@@ -111,49 +155,66 @@ const socials = [
             </div>
         </section>
 
+        {/* Experience */}
+        <section class="flex flex-col gap-6" aria-labelledby="experience-title">
+            <h2 id="experience-title" class="border-b border-zinc-500 pb-3 text-sm tracking-wide text-zinc-400 uppercase">
+                Experience
+            </h2>
+
+            <ol class="flex flex-col divide-y divide-zinc-800">
+                {experience.map((job) => (
+                        <li class="grid grid-cols-1 gap-2 py-6 first:pt-0 md:grid-cols-[12rem_1fr] md:gap-8">
+                            <p class="text-sm text-zinc-400 md:pt-1">
+                                {job.when}{job.type && <span class="block md:mt-1">{job.type}</span>}
+                            </p>
+                            <div class="flex max-w-2xl flex-col gap-2">
+                                <h3 class="text-lg font-medium text-white">
+                                    {job.role} <span class="text-zinc-400">· {job.org}</span>
+                                </h3>
+                                <p class="text-zinc-400">{job.body}</p>
+                            </div>
+                        </li>
+                ))}
+            </ol>
+        </section>
+
         {/* Stack */}
         <section class="flex flex-col gap-6">
-            <h2 class="border-b border-zinc-500 pb-3 text-sm tracking-wide text-zinc-500 uppercase">
-                What I work with
+            <h2 class="border-b border-zinc-500 pb-3 text-sm tracking-wide text-zinc-400 uppercase">
+                Tools I use
             </h2>
 
-            <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-                {stack.map((group) => (
-                        <div class="flex flex-col gap-3">
-                            <h3 class="text-sm text-zinc-500">{group.label}</h3>
-                            <ul class="flex flex-wrap gap-2">
-                                {group.items.map((item) => (
-                                        <li class="rounded-full border border-zinc-700 px-3 py-1 text-sm text-zinc-300">
-                                            {item}
-                                        </li>
-                                ))}
-                            </ul>
-                        </div>
+            <ul class="flex flex-wrap gap-2" aria-label="Main tools">
+                {highlights.map((item) => (
+                        <li class="rounded-full border border-zinc-700 px-3 py-1 text-sm text-zinc-300">{item}</li>
                 ))}
-            </div>
-        </section>
+            </ul>
 
-        {/* Contact */}
-        <section class="flex flex-col gap-6">
-            <h2 class="border-b border-zinc-500 pb-3 text-sm tracking-wide text-zinc-500 uppercase">
-                Elsewhere
-            </h2>
-
-            <div class="flex flex-col gap-6">
-                <p class="max-w-2xl text-zinc-400">
-                    If you have a product to build, or one that needs taking further, I'd like to hear about it.
-                    LinkedIn is the fastest way to reach me.
-                </p>
-
-                <div class="flex gap-4">
-                    {socials.map(({href, label, Icon}) => (
-                            <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label} title={label}>
-                                <Icon class="text-zinc-500 transition-colors hover:text-white"/>
-                            </a>
-                    ))}
+            <details class="group">
+                <summary class="flex w-fit cursor-pointer list-none items-center gap-2 text-sm text-zinc-300 transition-colors hover:text-white [&::-webkit-details-marker]:hidden">
+                    <span class="border-b border-transparent group-hover:border-zinc-300">Full stack</span>
+                    <ChevronDown size={16} class="transition-transform group-open:rotate-180" aria-hidden="true"/>
+                </summary>
+                <div class="pt-6">
+                    <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                        {stack.map((group) => (
+                                <div class="flex flex-col gap-3">
+                                    <h3 class="text-sm text-zinc-400">{group.label}</h3>
+                                    <ul class="flex flex-wrap gap-2">
+                                        {group.items.map((item) => (
+                                                <li class="rounded-full border border-zinc-700 px-3 py-1 text-sm text-zinc-300">
+                                                    {item}
+                                                </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                        ))}
+                    </div>
                 </div>
-            </div>
+            </details>
         </section>
+
+        <WorkWithMe/>
     </div>
 </div>
 

@@ -70,6 +70,7 @@ export interface Config {
     users: User;
     media: Media;
     projects: Project;
+    leads: Lead;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -80,6 +81,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
+    leads: LeadsSelect<false> | LeadsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -194,7 +196,32 @@ export interface Project {
   slug: string;
   subtitle?: string | null;
   featuredImage: string | Media;
+  /**
+   * Legacy single link. Prefer "Links" below; this still renders if Links is empty.
+   */
   liveLink?: string | null;
+  /**
+   * Lower shows first. Projects without a number come after, newest first.
+   */
+  order?: number | null;
+  /**
+   * Shows a "Concept" badge — for work that was not built for a real client.
+   */
+  isConcept?: boolean | null;
+  /**
+   * Shown at the top of the case study. App Store links get an App Store-style button.
+   */
+  links?:
+    | {
+        /**
+         * e.g. "Download on the App Store", "Open the web app".
+         */
+        label: string;
+        url: string;
+        kind: 'appstore' | 'web' | 'github' | 'other';
+        id?: string | null;
+      }[]
+    | null;
   shortDescription: string;
   cardLinkText?: string | null;
   content?: {
@@ -225,6 +252,17 @@ export interface Project {
       }[]
     | null;
   /**
+   * Optional. Leave the quote empty to hide it.
+   */
+  testimonial?: {
+    quote?: string | null;
+    name?: string | null;
+    /**
+     * e.g. "Founder, Nap Atlas".
+     */
+    role?: string | null;
+  };
+  /**
    * Screens shown below the write-up. Drag to reorder.
    */
   gallery?:
@@ -241,6 +279,51 @@ export interface Project {
         id?: string | null;
       }[]
     | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Audit requests from /start. Send the audit, then move the status along and log each follow-up. Sort by "Next follow-up" to see who is due.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leads".
+ */
+export interface Lead {
+  id: string;
+  status: 'new' | 'audit-sent' | 'contacted' | 'call-booked' | 'proposal' | 'won' | 'lost';
+  /**
+   * Starts at the 48-hour audit deadline. Cleared when a lead is won or lost.
+   */
+  nextFollowUp?: string | null;
+  /**
+   * Aim for 7 before giving up on a stage.
+   */
+  followups?: number | null;
+  consent: boolean;
+  consentAt?: string | null;
+  businessName: string;
+  link?: string | null;
+  contactName: string;
+  contactHandle: string;
+  email?: string | null;
+  preferredContact: 'messenger' | 'call-text' | 'viber' | 'whatsapp' | 'email';
+  /**
+   * Call notes, audit findings, what they said, what to send next.
+   */
+  notes?: string | null;
+  businessType: 'retail' | 'food' | 'hospitality' | 'health' | 'services' | 'other';
+  businessTypeOther?: string | null;
+  painPoints: ('manual' | 'inquiries' | 'website' | 'tracking' | 'online' | 'other')[];
+  painOther?: string | null;
+  inquiryVolume: 'lt10' | '10-30' | '30-100' | '100plus';
+  teamSize: 'solo' | '2-5' | '6-20' | '20plus';
+  budget: 'unsure' | 'lt50k' | '50-100k' | '100-200k' | '200kplus';
+  timeline: 'asap' | '1-3m' | 'exploring';
+  utmSource?: string | null;
+  utmMedium?: string | null;
+  utmCampaign?: string | null;
+  referrer?: string | null;
+  landingPage?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -279,6 +362,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'projects';
         value: string | Project;
+      } | null)
+    | ({
+        relationTo: 'leads';
+        value: string | Lead;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -398,6 +485,16 @@ export interface ProjectsSelect<T extends boolean = true> {
   subtitle?: T;
   featuredImage?: T;
   liveLink?: T;
+  order?: T;
+  isConcept?: T;
+  links?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        kind?: T;
+        id?: T;
+      };
   shortDescription?: T;
   cardLinkText?: T;
   content?: T;
@@ -413,6 +510,13 @@ export interface ProjectsSelect<T extends boolean = true> {
         techName?: T;
         id?: T;
       };
+  testimonial?:
+    | T
+    | {
+        quote?: T;
+        name?: T;
+        role?: T;
+      };
   gallery?:
     | T
     | {
@@ -421,6 +525,39 @@ export interface ProjectsSelect<T extends boolean = true> {
         wide?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "leads_select".
+ */
+export interface LeadsSelect<T extends boolean = true> {
+  status?: T;
+  nextFollowUp?: T;
+  followups?: T;
+  consent?: T;
+  consentAt?: T;
+  businessName?: T;
+  link?: T;
+  contactName?: T;
+  contactHandle?: T;
+  email?: T;
+  preferredContact?: T;
+  notes?: T;
+  businessType?: T;
+  businessTypeOther?: T;
+  painPoints?: T;
+  painOther?: T;
+  inquiryVolume?: T;
+  teamSize?: T;
+  budget?: T;
+  timeline?: T;
+  utmSource?: T;
+  utmMedium?: T;
+  utmCampaign?: T;
+  referrer?: T;
+  landingPage?: T;
   updatedAt?: T;
   createdAt?: T;
 }
