@@ -9,6 +9,7 @@ import type {
 } from 'payload'
 
 import { notifyNewLead } from '../hooks/notifyNewLead'
+import { pushLeadToAsana } from '../hooks/pushLeadToAsana'
 import { LEAD_OPTIONS } from '../lib/leadOptions'
 
 /**
@@ -176,7 +177,7 @@ export const Leads: CollectionConfig = {
   hooks: {
     beforeValidate: [keepPublicFields],
     beforeChange: [stampNewLead],
-    afterChange: [notifyNewLead],
+    afterChange: [notifyNewLead, pushLeadToAsana],
   },
   timestamps: true,
   fields: [
