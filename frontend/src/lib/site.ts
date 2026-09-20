@@ -30,10 +30,11 @@ export const site = {
 
   // TODO(Cris): the address you want enquiries sent to (shown as a mailto link).
   email: '',
-  // TODO(Cris): your Messenger link, e.g. 'https://m.me/<page-or-username>'.
-  messengerUrl: '',
-  // TODO(Cris): your booking page, e.g. a Google Calendar appointment schedule link.
-  bookingUrl: '',
+  messengerUrl: 'https://m.me/crislawrence.lucero',
+  // Google Calendar appointment schedule: "Free 15-minute call", 15 min,
+  // Tue/Thu evenings, Fri, Sat and Sun mornings (PHT), with a Meet link.
+  bookingUrl:
+    'https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ07vE32Epec-9JtbaTNq5kkCZW0z5Gaz6uNE487R2Nv-kWEswgkzt9cmuvsJbp0IsDLls-RyHBN',
   // TODO(Cris): starting price in pesos, digits and commas only, e.g. '15,000'.
   // Shows "Projects start at ₱15,000" under the hero CTA.
   startingPrice: '',
