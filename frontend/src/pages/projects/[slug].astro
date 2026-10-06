@@ -4,6 +4,7 @@ import ConceptBadge from "../../components/ConceptBadge.astro";
 import ProjectLinks from "../../components/ProjectLinks.astro";
 import Testimonial from "../../components/Testimonial.astro";
 import WorkWithMe from "../../components/WorkWithMe.astro";
+import CaseStudyGallery from "../../components/CaseStudyGallery.astro";
 import {Breadcrumbs} from "astro-breadcrumbs";
 import "astro-breadcrumbs/breadcrumbs.css";
 import {ArrowLeft} from "@lucide/astro";
@@ -46,26 +47,10 @@ const featured = imageAttrs(featuredImage);
 
 // Full width of the 1280px container, minus side padding.
 const FULL_SIZES = "(min-width: 1280px) 1184px, (min-width: 768px) calc(100vw - 96px), calc(100vw - 48px)";
-// Half of it from the sm breakpoint, where the gallery becomes two columns.
-const HALF_SIZES =
-    "(min-width: 1280px) 580px, (min-width: 768px) calc(50vw - 60px), (min-width: 640px) calc(50vw - 36px), calc(100vw - 48px)";
-// Portrait shots are capped at max-h-[36rem] (576px), so their rendered
-// width follows from the aspect ratio (a 1206x2622 phone screen is ~265px)
-// and the browser can pick the 400w file.
-const PORTRAIT_MAX_HEIGHT = 576;
-
-// Drop any gallery row whose upload is missing or not populated (depth=1 gives us objects).
-// Portrait shots (phone screenshots) would otherwise render taller than the
-// viewport in a grid column sized for landscape, so flag them for capping.
+// Gallery rows whose upload is missing or not populated (depth=1 gives us objects) are dropped.
 const gallery = (project?.gallery ?? []).flatMap((item) => {
     const image = asMedia(item.image);
-    const attrs = imageAttrs(image);
-    if (!image || !attrs) return [];
-    const portrait = Boolean(image.width && image.height && image.height > image.width);
-    const sizes = portrait && image.width && image.height
-        ? `${Math.ceil((PORTRAIT_MAX_HEIGHT * image.width) / image.height)}px`
-        : item.wide ? FULL_SIZES : HALF_SIZES;
-    return [{image, attrs, sizes, caption: item.caption, wide: item.wide, portrait}];
+    return image ? [{image, caption: item.caption, wide: item.wide}] : [];
 });
 
 // Share cards use the project's own hero, falling back to the default card.
@@ -144,7 +129,7 @@ const crumbs = [
                                 sizes={FULL_SIZES}
                                 fetchpriority="high"
                                 alt={altText(featuredImage, project.title)}
-                                class="h-auto w-full rounded-lg object-cover"
+                                class="h-auto w-full rounded-lg object-cover ring-1 ring-white/10"
                         />
                 )}
 
@@ -198,36 +183,8 @@ const crumbs = [
                     )}
                 </div>
 
-                {/* Gallery */}
-                {gallery.length > 0 && (
-                        <section class="flex flex-col gap-6">
-                            <h2 class="border-b border-zinc-500 pb-3 text-sm tracking-wide text-zinc-400 uppercase">
-                                Gallery
-                            </h2>
-                            <div class="grid grid-cols-1 items-start gap-6 sm:grid-cols-2">
-                                {gallery.map((item) => (
-                                        <figure class:list={["flex flex-col gap-3", item.wide && "sm:col-span-2"]}>
-                                            <img
-                                                    {...item.attrs}
-                                                    sizes={item.sizes}
-                                                    alt={item.caption || altText(item.image, project.title)}
-                                                    class:list={[
-                                                        "rounded-lg",
-                                                        item.portrait
-                                                            ? "mx-auto max-h-[36rem] w-auto object-contain"
-                                                            : "h-auto w-full object-cover",
-                                                    ]}
-                                                    loading="lazy"
-                                                    decoding="async"
-                                            />
-                                            {item.caption && (
-                                                    <figcaption class="text-sm text-zinc-400">{item.caption}</figcaption>
-                                            )}
-                                        </figure>
-                                ))}
-                            </div>
-                        </section>
-                )}
+                {/* Screens, grouped by product surface, with a viewer */}
+                <CaseStudyGallery items={gallery} projectTitle={project.title}/>
 
                 {/* Testimonial */}
                 {testimonial && (
@@ -258,6 +215,11 @@ const crumbs = [
 </div>
 
 <style is:global>
+    /* Keep the page from scrolling behind the open screen viewer. */
+    html:has(dialog[open]) {
+        overflow: hidden;
+    }
+
     .c-breadcrumbs__link {
         color: #a1a1aa !important;
         text-decoration: none;

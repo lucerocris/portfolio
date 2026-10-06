@@ -1,0 +1,262 @@
+---
+/**
+ * Case-study screens, grouped by product surface, with a viewer for seeing
+ * any shot large.
+ *
+ * Groups come from the caption: "Admin console — growth metrics" files under
+ * "Admin console" and shows "growth metrics" as its caption. Captions without
+ * " — " fall into an unnamed group. Groups keep the order the CMS gives.
+ *
+ * Each shot is a link to the full-size file, so without JavaScript it still
+ * opens large; the script upgrades that link into the <dialog> viewer.
+ */
+import {ChevronLeft, ChevronRight, X} from "@lucide/astro";
+import type {Media} from "@backend";
+import {altText, imageAttrs, mediaUrl} from "../lib/cms";
+
+type GalleryRow = { image: Media; caption?: string | null; wide?: boolean | null };
+
+interface Props {
+    items: GalleryRow[];
+    projectTitle: string;
+}
+
+const {items, projectTitle} = Astro.props;
+
+// Full width of the 1280px container, minus side padding.
+const FULL_SIZES = "(min-width: 1280px) 1184px, (min-width: 768px) calc(100vw - 96px), calc(100vw - 48px)";
+// Half of it from the sm breakpoint, where a group becomes two columns.
+const HALF_SIZES =
+    "(min-width: 1280px) 580px, (min-width: 768px) calc(50vw - 60px), (min-width: 640px) calc(50vw - 36px), calc(100vw - 48px)";
+// Portrait shots are capped at max-h-[36rem] (576px), so their rendered
+// width follows from the aspect ratio (a 1206x2622 phone screen is ~265px).
+const PORTRAIT_MAX_HEIGHT = 576;
+
+const SEPARATOR = " — ";
+
+type Shot = {
+    index: number;
+    attrs: NonNullable<ReturnType<typeof imageAttrs>>;
+    full: string;
+    sizes: string;
+    alt: string;
+    group: string;
+    caption: string;
+    wide: boolean;
+    portrait: boolean;
+};
+
+const shots: Shot[] = items.flatMap((item) => {
+    const attrs = imageAttrs(item.image);
+    const full = mediaUrl(item.image.url);
+    if (!attrs || !full) return [];
+    const {width, height} = item.image;
+    const portrait = Boolean(width && height && height > width);
+    const raw = item.caption?.trim() ?? "";
+    const cut = raw.indexOf(SEPARATOR);
+    const group = cut > 0 ? raw.slice(0, cut) : "";
+    const caption = cut > 0 ? raw.slice(cut + SEPARATOR.length) : raw;
+    return [{
+        index: 0,
+        attrs,
+        full,
+        sizes: portrait && width && height
+            ? `${Math.ceil((PORTRAIT_MAX_HEIGHT * width) / height)}px`
+            : item.wide ? FULL_SIZES : HALF_SIZES,
+        alt: raw || altText(item.image, projectTitle),
+        group,
+        caption: caption ? caption.charAt(0).toUpperCase() + caption.slice(1) : "",
+        wide: Boolean(item.wide),
+        portrait,
+    }];
+});
+
+// Group in first-seen order; the viewer steps through shots in that order.
+const groups: { name: string; shots: Shot[] }[] = [];
+for (const shot of shots) {
+    const existing = groups.find((g) => g.name === shot.group);
+    if (existing) existing.shots.push(shot);
+    else groups.push({name: shot.group, shots: [shot]});
+}
+let n = 0;
+for (const group of groups) for (const shot of group.shots) shot.index = n++;
+
+// A group holding one landscape shot fills the row instead of leaving half empty.
+const spansRow = (group: { shots: Shot[] }, shot: Shot) =>
+    !shot.portrait && (shot.wide || group.shots.length === 1);
+---
+
+{shots.length > 0 && (
+        <section class="flex flex-col gap-10" data-gallery>
+            <h2 class="border-b border-zinc-500 pb-3 text-sm tracking-wide text-zinc-400 uppercase">
+                Screens
+            </h2>
+
+            {groups.map((group) => (
+                    <div class="flex flex-col gap-5">
+                        {group.name && (
+                                <h3 class="flex items-baseline gap-3 text-lg font-medium text-white">
+                                    {group.name}
+                                    {group.shots.length > 1 && (
+                                            <span class="text-sm font-normal text-zinc-500 tabular-nums">
+                                                {group.shots.length} screens
+                                            </span>
+                                    )}
+                                </h3>
+                        )}
+                        <div class="grid grid-cols-1 items-start gap-x-6 gap-y-8 sm:grid-cols-2">
+                            {group.shots.map((shot) => (
+                                    <figure class:list={["flex flex-col gap-3", spansRow(group, shot) && "sm:col-span-2"]}>
+                                        <a
+                                                href={shot.full}
+                                                class="group/shot block cursor-zoom-in rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                                                data-shot={shot.index}
+                                                data-full={shot.full}
+                                                data-group={group.name}
+                                                data-caption={shot.caption}
+                                                aria-label={`View larger: ${shot.alt}`}
+                                        >
+                                            <img
+                                                    {...shot.attrs}
+                                                    sizes={spansRow(group, shot) && !shot.portrait ? FULL_SIZES : shot.sizes}
+                                                    alt={shot.alt}
+                                                    class:list={[
+                                                        "rounded-lg ring-1 ring-white/10 transition-opacity duration-200 ease-out group-hover/shot:opacity-90",
+                                                        shot.portrait
+                                                            ? "mx-auto max-h-[36rem] w-auto object-contain"
+                                                            : "h-auto w-full object-cover",
+                                                    ]}
+                                                    loading="lazy"
+                                                    decoding="async"
+                                            />
+                                        </a>
+                                        {shot.caption && (
+                                                <figcaption class="text-sm text-zinc-400">{shot.caption}</figcaption>
+                                        )}
+                                    </figure>
+                            ))}
+                        </div>
+                    </div>
+            ))}
+
+            {/* Viewer. Filled in by the script from the links above. */}
+            <dialog
+                    class="m-0 h-dvh max-h-none w-screen max-w-none bg-zinc-950/95 p-0 text-white backdrop:bg-black/60"
+                    aria-label="Screen viewer"
+                    data-viewer
+            >
+                <div class="flex h-full flex-col gap-4 p-4 md:p-6">
+                    <div class="flex items-center justify-between gap-4">
+                        <p class="min-w-0 truncate text-sm text-zinc-300">
+                            <span data-viewer-group class="font-medium text-white"></span>
+                            <span data-viewer-count class="ml-2 text-zinc-500 tabular-nums"></span>
+                        </p>
+                        <button
+                                type="button"
+                                class="grid size-11 shrink-0 place-items-center rounded-full text-zinc-300 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-white"
+                                aria-label="Close viewer"
+                                data-viewer-close
+                        >
+                            <X class="size-5"/>
+                        </button>
+                    </div>
+
+                    <div class="relative flex min-h-0 flex-1 items-center justify-center">
+                        <img data-viewer-img alt="" class="max-h-full max-w-full rounded-lg object-contain"/>
+                        <button
+                                type="button"
+                                class="absolute left-0 grid size-11 place-items-center rounded-full bg-zinc-900/80 text-white ring-1 ring-white/10 hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-white md:left-2"
+                                aria-label="Previous screen"
+                                data-viewer-prev
+                        >
+                            <ChevronLeft class="size-5"/>
+                        </button>
+                        <button
+                                type="button"
+                                class="absolute right-0 grid size-11 place-items-center rounded-full bg-zinc-900/80 text-white ring-1 ring-white/10 hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-white md:right-2"
+                                aria-label="Next screen"
+                                data-viewer-next
+                        >
+                            <ChevronRight class="size-5"/>
+                        </button>
+                    </div>
+
+                    <p data-viewer-caption class="min-h-5 text-center text-sm text-zinc-300" aria-live="polite"></p>
+
+                    {/* w-fit + mx-auto centres a short strip without clipping the start of a long one. */}
+                    <div class="mx-auto flex w-fit max-w-full gap-2 overflow-x-auto overscroll-x-contain p-1 [scrollbar-width:none]" data-viewer-thumbs>
+                        {shots.map((shot) => (
+                                <button
+                                        type="button"
+                                        class="h-12 shrink-0 overflow-hidden rounded opacity-50 ring-1 ring-white/10 transition-opacity duration-150 ease-out hover:opacity-100 focus-visible:outline-2 focus-visible:outline-white aria-[current=true]:opacity-100 aria-[current=true]:ring-2 aria-[current=true]:ring-white"
+                                        aria-label={`Show ${shot.alt}`}
+                                        data-thumb={shot.index}
+                                >
+                                    <img
+                                            src={shot.attrs.src}
+                                            alt=""
+                                            width={shot.attrs.width}
+                                            height={shot.attrs.height}
+                                            loading="lazy"
+                                            class="h-full w-auto object-cover"
+                                    />
+                                </button>
+                        ))}
+                    </div>
+                </div>
+            </dialog>
+        </section>
+)}
+
+<script>
+    for (const gallery of document.querySelectorAll<HTMLElement>("[data-gallery]")) {
+        const links = [...gallery.querySelectorAll<HTMLAnchorElement>("a[data-shot]")]
+            .sort((a, b) => Number(a.dataset.shot) - Number(b.dataset.shot));
+        const dialog = gallery.querySelector<HTMLDialogElement>("[data-viewer]");
+        if (!dialog || links.length === 0) continue;
+
+        const img = dialog.querySelector<HTMLImageElement>("[data-viewer-img]")!;
+        const groupEl = dialog.querySelector("[data-viewer-group]")!;
+        const countEl = dialog.querySelector("[data-viewer-count]")!;
+        const captionEl = dialog.querySelector("[data-viewer-caption]")!;
+        const thumbs = [...dialog.querySelectorAll<HTMLButtonElement>("[data-thumb]")];
+        const prev = dialog.querySelector<HTMLButtonElement>("[data-viewer-prev]")!;
+        const next = dialog.querySelector<HTMLButtonElement>("[data-viewer-next]")!;
+        let current = 0;
+
+        prev.hidden = next.hidden = links.length < 2;
+        dialog.querySelector<HTMLElement>("[data-viewer-thumbs]")!.hidden = links.length < 2;
+
+        const show = (i: number) => {
+            current = (i + links.length) % links.length;
+            const link = links[current];
+            img.src = link.dataset.full ?? link.href;
+            img.alt = link.querySelector("img")?.alt ?? "";
+            groupEl.textContent = link.dataset.group || "Screens";
+            countEl.textContent = `${current + 1} / ${links.length}`;
+            captionEl.textContent = link.dataset.caption ?? "";
+            thumbs.forEach((t, j) => t.setAttribute("aria-current", String(j === current)));
+            thumbs[current]?.scrollIntoView({block: "nearest", inline: "nearest"});
+        };
+
+        links.forEach((link, i) => link.addEventListener("click", (event) => {
+            if (event.metaKey || event.ctrlKey || event.shiftKey) return; // let new-tab clicks through
+            event.preventDefault();
+            show(i);
+            dialog.showModal();
+        }));
+        thumbs.forEach((thumb, i) => thumb.addEventListener("click", () => show(i)));
+        prev.addEventListener("click", () => show(current - 1));
+        next.addEventListener("click", () => show(current + 1));
+        dialog.querySelector("[data-viewer-close]")!.addEventListener("click", () => dialog.close());
+        dialog.addEventListener("keydown", (event) => {
+            if (event.key === "ArrowLeft") show(current - 1);
+            if (event.key === "ArrowRight") show(current + 1);
+        });
+        // A click on the backdrop (the dialog itself, outside the content) closes it.
+        dialog.addEventListener("click", (event) => {
+            if (event.target === dialog || event.target === dialog.firstElementChild) dialog.close();
+        });
+        dialog.addEventListener("close", () => links[current]?.focus());
+    }
+</script>

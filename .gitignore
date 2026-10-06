@@ -7,3 +7,6 @@ node_modules/
 !.env.example
 .vercel
 .env*
+
+# Screenshots of other products, kept for design study only
+docs/references/
