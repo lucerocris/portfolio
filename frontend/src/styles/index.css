@@ -27,8 +27,9 @@
     --sans: "Archivo Variable", ui-sans-serif, system-ui, sans-serif;
     --mono: "JetBrains Mono Variable", ui-monospace, "SFMono-Regular", monospace;
 
-    /* The index names: 104px on a 1440×900 screen, scaled by width and height. */
-    --display: clamp(52px, min(7.25vw, 11.6svh), 136px);
+    /* The index names: ~90px on a 1440×900 screen, scaled by width and height,
+       so six rows fit between the header and the footer. */
+    --display: clamp(44px, min(6.2vw, 10.2svh), 124px);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -325,6 +326,53 @@ html.js .view.is-entering { animation: wipe-in 0.6s var(--wipe) both; }
 .channels a:hover .channel-value { translate: 12px 0; }
 .channels a:hover .channel-arrow { color: var(--signal); translate: 3px -3px; }
 
+/* ---------- Experience ---------- */
+
+.label-link { width: fit-content; transition: color 0.25s; }
+.label-link:hover { color: var(--signal); }
+.exp-main { grid-column: 4 / 13; }
+.exp-title {
+    font-size: var(--display);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.05em;
+    margin-left: -0.04em;
+}
+.roles { margin-top: clamp(24px, 5svh, 56px); border-bottom: 1px solid var(--rule); }
+.role {
+    position: relative;
+    display: grid;
+    grid-template-columns: 170px minmax(0, 1fr) minmax(0, 380px);
+    gap: 24px;
+    align-items: baseline;
+    padding: clamp(12px, 2.1svh, 20px) 0;
+    border-top: 1px solid var(--rule);
+}
+.role-head { display: flex; flex-direction: column; gap: 2px; }
+.role-title {
+    font-size: clamp(20px, min(1.9vw, 3.1svh), 30px);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    transition: translate 0.45s var(--ease);
+}
+.role-note { font-size: 15px; line-height: 22px; opacity: 0.8; }
+a.role::before {
+    content: "";
+    position: absolute;
+    left: -26px;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    margin-top: -6px;
+    background: var(--signal);
+    opacity: 0;
+    scale: 0.4;
+    transition: opacity 0.25s, scale 0.4s var(--ease);
+}
+a.role:hover::before, a.role:focus-visible::before { opacity: 1; scale: 1; }
+a.role:hover .role-title { translate: 12px 0; }
+
 /* ---------- Case panel ---------- */
 
 .view-case { align-content: start; grid-template-rows: auto auto 1fr auto; row-gap: 0; }
@@ -356,6 +404,23 @@ html.js .view-case { padding-bottom: 0; padding-top: clamp(16px, 5svh, 56px); }
     box-shadow: 0 24px 60px -12px rgb(0 0 0 / 0.14);
 }
 .case-fig figcaption { margin-top: 10px; }
+
+/* Nook: three phone screens instead of one web screenshot. */
+.phones { display: flex; gap: clamp(10px, 1.2vw, 18px); justify-content: flex-end; }
+.phones img {
+    width: auto;
+    height: min(56svh, 520px);
+    aspect-ratio: 520 / 1130;
+    object-fit: cover;
+    border-radius: clamp(14px, 1.6vw, 24px);
+    border: 1px solid var(--rule);
+    box-shadow: 0 24px 50px -16px rgb(0 0 0 / 0.18);
+}
+.phones img:nth-child(2) { translate: 0 -14px; }
+.case-phones figcaption { text-align: right; }
+html.js .view-case.is-active .phones img { animation: fade-up 0.8s var(--ease) both; }
+html.js .view-case.is-active .phones img:nth-child(2) { animation-delay: 0.08s; }
+html.js .view-case.is-active .phones img:nth-child(3) { animation-delay: 0.16s; }
 .pager {
     grid-column: 1 / -1;
     align-self: end;
@@ -404,7 +469,7 @@ html.js .idx-num, html.js .intro, html.js .peek-hint { animation: fade 0.6s ease
 /* ---------- Phones ---------- */
 
 @media (max-width: 767px) {
-    :root { --m: 20px; --top: 26px; --display: clamp(44px, 14.4vw, 64px); }
+    :root { --m: 20px; --top: 26px; --display: clamp(38px, 12.2vw, 54px); }
 
     .op-grid { grid-template-columns: repeat(4, 1fr); }
     .op-grid span:nth-child(n + 5) { display: none; }
@@ -419,14 +484,15 @@ html.js .idx-num, html.js .intro, html.js .peek-hint { animation: fade 0.6s ease
 
     .view { padding: 40px var(--m); align-content: start; }
     html.js .view { padding-block: 40px 24px; }
-    .view-label, .intro, .idx-wrap, .about-main, .contact-main { grid-column: 1; }
+    .view-label, .intro, .idx-wrap, .about-main, .contact-main, .exp-main { grid-column: 1; }
+    .view-label { flex-direction: row; justify-content: space-between; }
     .view-label { padding-top: 0; margin-bottom: 12px; gap: 4px; }
 
     .intro { padding: 0; }
     .intro-copy { max-width: 270px; font-size: 15px; line-height: 22px; }
     .intro-status { display: none; }
     .idx-wrap { margin-top: clamp(24px, 6svh, 64px); }
-    .idx li + li { margin-top: 6px; }
+    .idx li + li { margin-top: 4px; }
     .idx-link { flex-wrap: wrap; gap: 0 8px; }
     .idx-name { line-height: 1.07; }
     .idx-num { padding-top: 0.5em; font-size: 10px; }
@@ -445,16 +511,27 @@ html.js .idx-num, html.js .intro, html.js .peek-hint { animation: fade 0.6s ease
     .channel-arrow { grid-area: arrow; }
     .channels a::before { display: none; }
 
+    .exp-title { font-size: clamp(44px, 13.4vw, 60px); }
+    .roles { margin-top: 20px; }
+    .role { grid-template-columns: 1fr; gap: 2px; padding: 12px 0; }
+    .role-title { font-size: 19px; }
+    .role-note { font-size: 13px; line-height: 19px; margin-top: 4px; }
+    .role-when { font-size: 11px; line-height: 16px; }
+    a.role::before { display: none; }
+
     .view-case { grid-template-rows: none; }
     html.js .view-case { padding-top: 32px; }
     .case-title { font-size: clamp(38px, 12.4vw, 52px); }
     .case-fig { grid-row: 3; grid-column: 1; width: 100%; margin-top: 16px; }
     .case-fig figcaption { display: none; }
+    .phones { justify-content: space-between; gap: 8px; }
+    .phones img { height: auto; width: calc((100% - 16px) / 3); border-radius: 12px; }
+    .phones img:nth-child(2) { translate: none; }
     .case-body { grid-column: 1; padding: 0; margin-top: 20px; }
     .case-sub { font-size: 18px; line-height: 25px; }
     .case-copy { font-size: 14px; line-height: 21px; margin-top: 10px; }
     .case-copy + .case-copy { display: none; }
-    .facts { gap: 24px; margin: 20px 0; }
+    .facts { gap: 24px; margin: 14px 0 16px; }
     .facts dd { font-size: 13px; line-height: 18px; }
     .pager-hint { display: none; }
     .pager { padding-bottom: var(--top); }

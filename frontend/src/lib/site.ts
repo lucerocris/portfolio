@@ -27,8 +27,8 @@ export const site = {
   role: 'Web & App Developer',
   location: 'Cebu, Philippines',
 
-  // TODO(Cris): the address you want enquiries sent to (shown as a mailto link).
-  email: '',
+  // The address on the résumé; shown as a mailto link.
+  email: 'lucerocris22@gmail.com',
   messengerUrl: 'https://m.me/crislawrence.lucero',
 
   cvPath: '/Lucero_cris.pdf',

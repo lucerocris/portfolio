@@ -72,7 +72,7 @@ function show(name: string) {
 
   // Index → case: the preview image grows into the case figure.
   const peek = activeIndex != null ? peekImgs[activeIndex] : null
-  const fig = to.querySelector<HTMLImageElement>('.case-fig img')
+  const fig = to.querySelector<HTMLImageElement>('.case-fig img.case-shot')
   const canMorph =
     !reduce &&
     'startViewTransition' in document &&

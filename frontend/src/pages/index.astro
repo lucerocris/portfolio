@@ -15,7 +15,7 @@ import "../styles/index.css";
 import archivoLatin from "@fontsource-variable/archivo/files/archivo-latin-wght-normal.woff2?url";
 import monoLatin from "@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url";
 import {contactMethods, site} from "../lib/site";
-import {work} from "../lib/work";
+import {experience, work} from "../lib/work";
 
 export const prerender = true;
 
@@ -52,7 +52,7 @@ const external = (href: string) => /^https?:/.test(href);
 <head>
     <Head
             title={`${site.name} — Web & App Developer in Cebu`}
-            description="Cris Lucero is a web and app developer in Cebu, Philippines. Selected work: Nook, PickleRank PH, Study Hub and Nap Atlas."
+            description={`Cris Lucero is a web and app developer in Cebu, Philippines. Selected work: ${work.map((p) => p.title).join(", ")}.`}
             fontPreloads={[archivoLatin, monoLatin]}
     />
     <meta name="theme-color" content="#F1F0EB">
@@ -69,6 +69,7 @@ const external = (href: string) => /^https?:/.test(href);
     <p class="op-role mono muted">Developer — Cebu, PH</p>
     <nav class="op-nav mono" aria-label="Sections">
         <a href="#index" data-nav="index" aria-current="page">Index</a>
+        <a href="#experience" data-nav="experience">Experience</a>
         <a href="#about" data-nav="about">About</a>
         <a href="#contact" data-nav="contact">Contact</a>
     </nav>
@@ -82,7 +83,7 @@ const external = (href: string) => /^https?:/.test(href);
         <div class="intro">
             <p class="intro-copy">Web and app developer in Cebu. I take products from first sketch to shipped:
                 interface, backend, and the automations in between.</p>
-            <p class="intro-status mono muted">Now — automation intern,<br>open to select freelance work</p>
+            <p class="intro-status mono muted">Now — SWE intern,<br>open to select freelance work</p>
         </div>
 
         <div class="idx-wrap">
@@ -133,11 +134,39 @@ const external = (href: string) => /^https?:/.test(href);
             <h2 class="about-lead" id="about-title">I build products end to end: the interface, the backend, and the
                 automations in between.</h2>
             <div class="about-cols">
-                <div><p class="mono muted">Now</p><p>Automation intern, open to select freelance work.</p></div>
+                <div><p class="mono muted">Now</p><p>Software engineering intern, open to select freelance work.</p></div>
                 <div><p class="mono muted">What I make</p><p>Web apps, mobile apps, Shopify stores and internal tools.</p></div>
                 <div><p class="mono muted">Based</p><p>Cebu, Philippines. GMT+8, replies {site.replyTime}.</p></div>
             </div>
             <a class="btn mono" href={site.cvPath} download>Download résumé ↓</a>
+        </div>
+    </section>
+
+    <!-- Experience -->
+    <section class="view view-experience" id="experience" data-view="experience" aria-labelledby="experience-title">
+        <div class="view-label">
+            <p class="mono">(Experience)</p>
+            <a class="mono muted label-link" href={site.cvPath} download>Full résumé ↓</a>
+        </div>
+        <div class="exp-main">
+            <h2 class="exp-title" id="experience-title">Experience.</h2>
+            <ol class="roles">
+                {experience.map((r) => {
+                    const Tag = r.href ? "a" : "div";
+                    return (
+                            <li>
+                                <Tag class="role" href={r.href}>
+                                    <span class="role-when mono muted">{r.when}</span>
+                                    <span class="role-head">
+                                        <span class="role-title">{r.title}</span>
+                                        <span class="role-org mono muted">{r.org}</span>
+                                    </span>
+                                    <span class="role-note">{r.note}</span>
+                                </Tag>
+                            </li>
+                    );
+                })}
+            </ol>
         </div>
     </section>
 
@@ -184,14 +213,26 @@ const external = (href: string) => /^https?:/.test(href);
                             <div><dt class="mono muted">Status</dt><dd>{p.status}</dd></div>
                         </dl>
                         {p.link && (
-                                <a class="btn mono" href={p.link.href} target="_blank" rel="noopener noreferrer">Visit {p.link.label} ↗</a>
+                                <a class="btn mono" href={p.link.href} target={external(p.link.href) ? "_blank" : undefined}
+                                   rel={external(p.link.href) ? "noopener noreferrer" : undefined}>{p.link.text ?? `Visit ${p.link.label} ↗`}</a>
                         )}
                     </div>
-                    <figure class="case-fig">
-                        <img src={p.image.src} alt={p.image.alt} width="1440" height="900" loading="lazy" decoding="async"
-                             style={p.image.position ? `object-position:${p.image.position}` : undefined}>
-                        <figcaption class="mono muted">{p.image.caption}</figcaption>
-                    </figure>
+                    {p.screens ? (
+                            <figure class="case-fig case-phones">
+                                <div class="phones">
+                                    {p.screens.map((s) => (
+                                            <img src={s.src} alt={s.alt} width="520" height="1130" loading="lazy" decoding="async">
+                                    ))}
+                                </div>
+                                <figcaption class="mono muted">iOS app — Featured, Map, Café</figcaption>
+                            </figure>
+                    ) : (
+                            <figure class="case-fig">
+                                <img class="case-shot" src={p.image.src} alt={p.image.alt} width="1440" height="900" loading="lazy"
+                                     decoding="async" style={p.image.position ? `object-position:${p.image.position}` : undefined}>
+                                <figcaption class="mono muted">{p.image.caption}</figcaption>
+                            </figure>
+                    )}
                     <nav class="pager mono" aria-label="Projects">
                         <a href={`#work/${prev.slug}`} data-dir="prev">← {pad(pi + 1)} {prev.title}</a>
                         <span class="muted pager-hint">Esc to close</span>
