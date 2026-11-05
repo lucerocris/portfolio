@@ -12,6 +12,14 @@ loadEnv();
 export default defineConfig({
     // The floating dev toolbar sits over the footer on small screens.
     devToolbar: { enabled: false },
+    // The site is a one-pager now: About, Contact and the project index live on /.
+    // The old pages and the free-audit funnel redirect there.
+    redirects: {
+        '/about': '/#about',
+        '/projects': '/',
+        '/start': '/',
+        '/start/thanks': '/',
+    },
     // Absolute base for canonical URLs, Open Graph tags and the sitemap.
     // Set PUBLIC_SITE_URL in production — localhost is only a dev fallback.
     site: process.env.PUBLIC_SITE_URL || 'http://localhost:4321',

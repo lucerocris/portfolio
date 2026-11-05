@@ -3,7 +3,6 @@ import Layout from "../../layouts/Layout.astro";
 import ConceptBadge from "../../components/ConceptBadge.astro";
 import ProjectLinks from "../../components/ProjectLinks.astro";
 import Testimonial from "../../components/Testimonial.astro";
-import WorkWithMe from "../../components/WorkWithMe.astro";
 import CaseStudyGallery from "../../components/CaseStudyGallery.astro";
 import {Breadcrumbs} from "astro-breadcrumbs";
 import "astro-breadcrumbs/breadcrumbs.css";
@@ -92,7 +91,7 @@ const crumbs = [
                         ? "There's no project at this address. It may have been renamed or removed."
                         : "Something went wrong on our side. Please refresh the page, or try again in a few minutes."}
                 </p>
-                <a href="/projects" class="group w-fit">
+                <a href="/" class="group w-fit">
                     <div class="flex items-center gap-2">
                         <ArrowLeft
                                 class="h-5 w-5 text-white transition-transform duration-300 group-hover:-translate-x-1"/>
@@ -196,11 +195,9 @@ const crumbs = [
                         </section>
                 )}
 
-                <WorkWithMe heading="Want something like this for your business?"/>
-
                 {/* Footer nav */}
                 <nav class="border-t border-zinc-800 pt-8" aria-label="Case study">
-                    <a href="/projects" class="group w-fit">
+                    <a href="/" class="group w-fit">
                         <div class="flex items-center gap-2">
                             <ArrowLeft
                                     class="h-5 w-5 text-white transition-transform duration-300 group-hover:-translate-x-1"/>

@@ -1,0 +1,75 @@
+---
+/**
+ * The shared <head> contents: meta, Open Graph, canonical URL, favicon and a
+ * font preload. Used by Layout (case-study pages) and by the one-pager home
+ * page, which has its own shell.
+ */
+import {site} from "../lib/site";
+
+interface Props {
+    title: string;
+    description: string;
+    /** Absolute URL or site-root-relative path. Falls back to the 1200x630 share card. */
+    ogImage?: string;
+    /** Pixel size of a custom ogImage, when known. */
+    ogImageWidth?: number | null;
+    ogImageHeight?: number | null;
+    ogImageAlt?: string;
+    ogType?: "website" | "article";
+    /** Image URLs on the page; a cross-origin host (e.g. the Spaces CDN) gets a preconnect. */
+    imageUrls?: (string | undefined)[];
+    /** woff2 URLs to preload so text renders in the right font on first paint. */
+    fontPreloads?: string[];
+}
+
+const {title, description, ogImage, ogType = "website", fontPreloads = []} = Astro.props;
+
+// The default share card is text only (name, role, Cebu) — see public/og-default.jpg.
+const og = ogImage
+    ? {src: ogImage, width: Astro.props.ogImageWidth, height: Astro.props.ogImageHeight, alt: Astro.props.ogImageAlt ?? title}
+    : {src: "/og-default.jpg", width: 1200, height: 630, alt: `${site.name} — ${site.role} · ${site.location}`};
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+
+// Once DO_SPACES_CDN_URL is set, media URLs point at the CDN. The host is
+// read from the URLs the CMS returns, so nothing is hardcoded here.
+const preconnectOrigins = [...new Set((Astro.props.imageUrls ?? []).flatMap((url) => {
+    try {
+        const origin = new URL(url ?? "").origin;
+        return origin !== new URL(Astro.url).origin && origin !== Astro.site?.origin ? [origin] : [];
+    } catch {
+        return [];
+    }
+}))];
+const ogImageUrl = og.src.startsWith("http") ? og.src : new URL(og.src, Astro.site).href;
+---
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="canonical" href={canonical}>
+
+<title>{title}</title>
+<meta name="description" content={description}>
+
+<meta property="og:type" content={ogType}>
+<meta property="og:site_name" content={site.name}>
+<meta property="og:title" content={title}>
+<meta property="og:description" content={description}>
+<meta property="og:url" content={canonical}>
+<meta property="og:image" content={ogImageUrl}>
+{og.width && og.height && (
+    <>
+        <meta property="og:image:width" content={String(og.width)}>
+        <meta property="og:image:height" content={String(og.height)}>
+    </>
+)}
+<meta property="og:image:alt" content={og.alt}>
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content={title}>
+<meta name="twitter:description" content={description}>
+<meta name="twitter:image" content={ogImageUrl}>
+
+{preconnectOrigins.map((origin) => <link rel="preconnect" href={origin}>)}
+{fontPreloads.map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin>)}

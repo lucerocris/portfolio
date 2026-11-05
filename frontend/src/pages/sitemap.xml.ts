@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro'
 
 import { CMS_URL } from '../lib/cms'
 
-const STATIC_PATHS = ['/', '/about', '/projects', '/start']
+const STATIC_PATHS = ['/']
 
 export const GET: APIRoute = async ({ site }) => {
   const base = (site?.href ?? 'http://localhost:4321/').replace(/\/+$/, '')

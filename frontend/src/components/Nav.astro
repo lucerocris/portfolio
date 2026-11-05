@@ -1,20 +1,19 @@
 ---
 /**
- * Site navigation. Before this existed, /projects was the only internal link
- * anywhere and /about was orphaned — reachable by URL and indexable, but
- * unlinked from the site itself.
+ * Navigation for the case-study pages. The home page is a one-pager with its
+ * own header; these links point back into its sections.
  */
-import CtaButton from "./CtaButton.astro";
-import {primaryCta} from "../lib/site";
 
 const path = Astro.url.pathname;
 
 const links = [
-    {href: "/projects", label: "Projects"},
-    {href: "/about", label: "About"},
+    {href: "/#index", label: "Work"},
+    {href: "/#about", label: "About"},
+    {href: "/#contact", label: "Contact"},
 ];
 
-const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
+// Work is active on case-study pages; About and Contact live on the home page.
+const isActive = (href: string) => href === "/#index" && path.startsWith("/projects/");
 ---
 
 <header class="mx-auto w-full max-w-7xl px-6 pt-8 md:px-12 md:pt-10">
@@ -40,11 +39,6 @@ const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
                         </a>
                     </li>
             ))}
-            {primaryCta() && !Astro.url.pathname.startsWith("/start") && (
-                    <li>
-                        <CtaButton size="sm" compactLabel="Free audit"/>
-                    </li>
-            )}
         </ul>
     </nav>
 </header>
