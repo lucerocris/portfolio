@@ -3,6 +3,7 @@
  * Navigation for the case-study pages. The home page is a one-pager with its
  * own header; these links point back into its sections.
  */
+import Mark from "./Mark.astro";
 
 const path = Astro.url.pathname;
 
@@ -20,8 +21,9 @@ const isActive = (href: string) => href === "/#index" && path.startsWith("/proje
 <header class="mx-auto w-full max-w-7xl px-6 pt-8 md:px-12 md:pt-10">
     <nav class="flex items-center justify-between gap-2" aria-label="Main">
         <a href="/"
-           class="text-sm font-medium whitespace-nowrap text-white transition-opacity hover:opacity-70"
+           class="inline-flex items-center gap-2 text-sm font-medium whitespace-nowrap text-white transition-opacity hover:opacity-70"
            aria-current={path === "/" ? "page" : undefined}>
+            <Mark size={18} />
             Cris Lucero
         </a>
 

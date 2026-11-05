@@ -101,7 +101,10 @@ img { display: block; max-width: 100%; height: auto; }
     align-items: baseline;
     padding: var(--top) var(--m) 0;
 }
-.op-mark { grid-column: 1 / 4; font-size: 15px; font-weight: 500; width: fit-content; }
+.op-mark { grid-column: 1 / 4; font-size: 15px; font-weight: 500; width: fit-content; display: inline-flex; align-items: center; gap: 9px; }
+.op-mark .mark { flex: none; overflow: visible; }
+.op-mark .mark-dot { transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+.op-mark:hover .mark-dot { transform: translateY(-18px); }
 .op-role { grid-column: 4 / 10; }
 .op-nav { grid-column: 10 / 13; justify-self: end; display: flex; gap: 24px; }
 .op-nav a { color: var(--muted); transition: color 0.25s; }
@@ -448,6 +451,14 @@ html.js .op-foot { animation: fade 0.6s ease 0.5s both; }
 html.js .idx-name { animation: rise 0.9s var(--ease) both; animation-delay: calc(0.35s + var(--i) * 70ms); }
 html.js .idx-num, html.js .intro, html.js .peek-hint { animation: fade 0.6s ease 0.9s both; }
 
+/* Leaving a case: the footer comes back from display:none, which would replay
+   its delayed load fade, and the index names rise again (a separate keyframe
+   so the animation restarts). Without view transitions the view fades in. */
+html.js.loaded .op-foot { animation: fade 0.35s ease both; }
+html.js .view-index.is-returning .idx-name { animation: rise-back 0.8s var(--ease) both; animation-delay: calc(var(--i) * 45ms); }
+html.js .view.is-fading { animation: fade 0.35s ease both; }
+
+@keyframes rise-back { from { transform: translateY(105%); } }
 @keyframes draw { from { transform: scaleY(0); } }
 @keyframes fade { from { opacity: 0; } }
 @keyframes rise { from { transform: translateY(105%); } }
@@ -456,6 +467,13 @@ html.js .idx-num, html.js .intro, html.js .peek-hint { animation: fade 0.6s ease
 /* View transition: the preview card grows into the case figure. */
 ::view-transition-group(shot) { animation-duration: 0.7s; animation-timing-function: var(--ease); }
 ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.35s; }
+/* Leaving a case: out, then in — never both layouts at once. */
+html.vt-back::view-transition-old(root) { animation: fade-out 0.18s ease both; }
+html.vt-back::view-transition-new(root) { animation: fade 0.3s ease 0.14s both; }
+@keyframes fade-out { to { opacity: 0; } }
+/* The header never changes between views, so it stays put. */
+html.js .op-top { view-transition-name: op-top; }
+::view-transition-group(op-top) { animation: none; }
 
 /* ---------- Mid-size screens ---------- */
 

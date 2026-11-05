@@ -33,6 +33,7 @@ const footer = document.querySelector<HTMLElement>('.op-foot')!
 /* ---------- Routing ---------- */
 
 let current = 'index'
+let returnTimer = 0
 
 const routeFromHash = () => {
   const name = decodeURIComponent(location.hash.slice(1))
@@ -59,7 +60,7 @@ function show(name: string) {
   const activeIndex = activeI
 
   const swap = () => {
-    from.classList.remove('is-active', 'is-entering')
+    from.classList.remove('is-active', 'is-entering', 'is-fading', 'is-returning')
     from.inert = true
     to.classList.add('is-active')
     to.inert = false
@@ -97,6 +98,34 @@ function show(name: string) {
     return
   }
 
+  // Case → elsewhere: cross-fade instead of the wipe, so the case never
+  // blinks out over an empty screen. Back on the index the names rise again.
+  if (!reduce && from.dataset.view!.startsWith('work/') && !name.startsWith('work/')) {
+    const back = () => {
+      swap()
+      if (to === indexView) {
+        to.classList.remove('is-returning')
+        void to.offsetWidth
+        to.classList.add('is-returning')
+        clearTimeout(returnTimer)
+        returnTimer = window.setTimeout(() => to.classList.remove('is-returning'), 1400)
+      }
+    }
+    if ('startViewTransition' in document) {
+      const root = document.documentElement
+      root.classList.add('vt-back')
+      const t = (document as Document & { startViewTransition: (cb: () => void) => { finished: Promise<void> } })
+        .startViewTransition(back)
+      t.finished.finally(() => root.classList.remove('vt-back'))
+    } else {
+      back()
+      to.classList.remove('is-fading')
+      void to.offsetWidth
+      to.classList.add('is-fading')
+    }
+    return
+  }
+
   swap()
   if (!reduce) {
     to.classList.remove('is-entering')
@@ -118,6 +147,8 @@ if (initial !== 'index') {
 setNav(current)
 
 addEventListener('hashchange', () => show(routeFromHash()))
+// After the load sequence, later reveals use short, undelayed fades.
+setTimeout(() => document.documentElement.classList.add('loaded'), 1600)
 
 /* ---------- Hover preview ---------- */
 
