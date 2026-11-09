@@ -111,6 +111,10 @@ img { display: block; max-width: 100%; height: auto; }
 .op-nav a:hover, .op-nav a[aria-current] { color: var(--ink); }
 .op-nav a[aria-current] { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
 
+/* Phone menu: button and panel exist on every screen but only show on phones
+   with JS (see the phone block below). */
+.menu-btn, .menu { display: none; }
+
 .op-foot {
     position: relative;
     z-index: 3;
@@ -496,6 +500,97 @@ html.js .op-top { view-transition-name: op-top; }
     .op-top { display: flex; justify-content: space-between; }
     .op-role, .foot-copy { display: none; }
     .op-nav { gap: 16px; font-size: 11px; }
+
+    /* With JS: just the mark and a menu button; the links move into the menu. */
+    html.js .op-top { align-items: center; z-index: 6; }
+    html.js .op-name, html.js .op-nav { display: none; }
+    html.js .op-mark .mark { height: 24px; width: auto; }
+
+    html.js .menu-btn {
+        display: grid;
+        place-content: center;
+        gap: 6px;
+        width: 44px;
+        height: 44px;
+        margin: -10px -12px -10px 0;
+        background: none;
+        border: 0;
+        color: var(--ink);
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .menu-bar {
+        display: block;
+        width: 22px;
+        height: 1.5px;
+        border-radius: 1px;
+        background: currentColor;
+        transition: translate 0.45s var(--ease), rotate 0.45s var(--ease), width 0.45s var(--ease);
+    }
+    .menu-bar:last-child { width: 14px; margin-left: auto; }
+    .menu-btn:hover .menu-bar:last-child { width: 22px; }
+    /* Open: the two bars meet in the middle and cross. */
+    body.menu-open .menu-bar:first-child { translate: 0 3.75px; rotate: 45deg; }
+    body.menu-open .menu-bar:last-child { translate: 0 -3.75px; rotate: -45deg; width: 22px; }
+
+    html.js .menu {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: fixed;
+        inset: 0;
+        z-index: 5;
+        padding: calc(var(--top) + 72px) var(--m) var(--top);
+        background: var(--paper);
+        /* Same 4 column lines as the page behind it. */
+        background-image: repeating-linear-gradient(to right, transparent 0 calc((100% - 1px) / 4), var(--grid) calc((100% - 1px) / 4) calc(100% / 4));
+        background-origin: content-box;
+        background-clip: padding-box;
+        clip-path: inset(0 0 100% 0);
+        visibility: hidden;
+        transition: clip-path 0.5s var(--wipe), visibility 0s linear 0.5s;
+    }
+    body.menu-open .menu {
+        clip-path: inset(0 0 0 0);
+        visibility: visible;
+        transition: clip-path 0.6s var(--wipe), visibility 0s;
+    }
+
+    .menu-link {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        padding: 6px 0 10px;
+        border-bottom: 1px solid var(--rule);
+        font-size: clamp(40px, 13vw, 56px);
+        font-weight: 500;
+        line-height: 1;
+        letter-spacing: -0.035em;
+    }
+    .menu-mask { display: block; overflow: clip; padding-bottom: 0.06em; }
+    .menu-label { display: block; translate: 0 105%; transition: translate 0.35s var(--ease); }
+    .menu-num { padding-top: 0.6em; opacity: 0; transition: opacity 0.25s; }
+    .menu-link[aria-current] .menu-label::after {
+        content: "";
+        display: inline-block;
+        width: 0.16em;
+        height: 0.16em;
+        margin-left: 0.08em;
+        border-radius: 50%;
+        background: var(--signal);
+    }
+    .menu-link:active .menu-label { color: var(--signal); }
+
+    .menu-foot { display: flex; justify-content: space-between; gap: 16px; font-size: 11px; opacity: 0; transition: opacity 0.25s; }
+    .menu-foot a { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+
+    /* Opening: once the panel is mostly down, the names rise one after another. */
+    body.menu-open .menu-label {
+        translate: 0 0;
+        transition: translate 0.8s var(--ease) calc(0.22s + var(--i) * 60ms);
+    }
+    body.menu-open .menu-num { opacity: 1; transition: opacity 0.5s ease calc(0.35s + var(--i) * 60ms); }
+    body.menu-open .menu-foot { opacity: 1; transition: opacity 0.5s ease 0.55s; }
     .op-foot { display: flex; justify-content: space-between; padding-top: 16px; }
     .foot-links { gap: 18px; font-size: 11px; order: -1; }
     .foot-clock { font-size: 11px; }
@@ -511,8 +606,13 @@ html.js .op-top { view-transition-name: op-top; }
     .intro-status { display: none; }
     .idx-wrap { margin-top: clamp(24px, 6svh, 64px); }
     .idx li + li { margin-top: 4px; }
+    /* The number stays beside the name; only the description wraps to its own
+       line. 11vw fits the longest name ("Pocket Concerts") and its number on
+       one line down to a 320px screen, and the mask cap keeps the number from
+       ever being pushed under a name. */
     .idx-link { flex-wrap: wrap; gap: 0 8px; }
-    .idx-name { line-height: 1.07; }
+    .idx-mask { max-width: calc(100% - 32px); }
+    .idx-name { line-height: 1.07; font-size: clamp(34px, 11vw, 54px); }
     .idx-num { padding-top: 0.5em; font-size: 10px; }
     .idx-desc { display: block; flex-basis: 100%; font-size: 11px; line-height: 18px; color: var(--muted); }
     .idx-marker { left: -15px; width: 9px; height: 9px; }

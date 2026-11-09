@@ -271,10 +271,74 @@ document.addEventListener('click', (e) => {
   }
 })
 
+/* ---------- Phone menu ---------- */
+
+const menuBtn = document.querySelector<HTMLButtonElement>('.menu-btn')!
+const menu = document.querySelector<HTMLElement>('.menu')!
+const menuLinks = [...menu.querySelectorAll<HTMLAnchorElement>('.menu-link')]
+const behind = [document.querySelector<HTMLElement>('.op-main')!, footer]
+const phone = matchMedia('(max-width: 767px)')
+let menuOpen = false
+let menuTimer = 0
+
+function openMenu() {
+  if (menuOpen) return
+  menuOpen = true
+  clearTimeout(menuTimer)
+  closeSheet()
+  clearActive()
+  menu.inert = false
+  behind.forEach((el) => (el.inert = true))
+  body.classList.add('menu-open')
+  menuBtn.setAttribute('aria-expanded', 'true')
+  menuBtn.setAttribute('aria-label', 'Close menu')
+  // Focus the current section once the panel has started to come down.
+  const here = menuLinks.find((a) => a.hasAttribute('aria-current')) ?? menuLinks[0]
+  menuTimer = window.setTimeout(() => here.focus({ preventScroll: true }), reduce ? 0 : 250)
+}
+
+/** Closes the menu; resolves once the panel has wiped back up. */
+function closeMenu(refocus = false): Promise<void> {
+  if (!menuOpen) return Promise.resolve()
+  menuOpen = false
+  clearTimeout(menuTimer)
+  body.classList.remove('menu-open')
+  menu.inert = true
+  behind.forEach((el) => (el.inert = false))
+  menuBtn.setAttribute('aria-expanded', 'false')
+  menuBtn.setAttribute('aria-label', 'Open menu')
+  if (refocus) menuBtn.focus({ preventScroll: true })
+  return new Promise((done) => setTimeout(done, reduce ? 0 : 480))
+}
+
+menuBtn.addEventListener('click', () => (menuOpen ? closeMenu() : openMenu()))
+
+menuLinks.forEach((a) => {
+  a.addEventListener('click', (e) => {
+    e.preventDefault()
+    const target = a.getAttribute('href')!
+    // Let the panel clear before the view swaps, so the two never overlap.
+    closeMenu().then(() => {
+      if (location.hash !== target && !(target === '#index' && current === 'index')) location.hash = target
+    })
+  })
+})
+
+// The mark, back/forward or a resize to desktop also close it.
+addEventListener('hashchange', () => closeMenu())
+phone.addEventListener('change', (e) => {
+  if (!e.matches) closeMenu()
+})
+
 /* ---------- Keyboard ---------- */
 
 document.addEventListener('keydown', (e) => {
   if (e.metaKey || e.ctrlKey || e.altKey) return
+
+  if (menuOpen) {
+    if (e.key === 'Escape') closeMenu(true)
+    return
+  }
 
   if (current.startsWith('work/')) {
     const view = views.get(current)!

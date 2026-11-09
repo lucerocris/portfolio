@@ -46,6 +46,13 @@ const footLinks = [
 ].filter(Boolean) as { label: string; href: string }[];
 
 const external = (href: string) => /^https?:/.test(href);
+
+const sections = [
+    {id: "index", label: "Index"},
+    {id: "experience", label: "Experience"},
+    {id: "about", label: "About"},
+    {id: "contact", label: "Contact"},
+];
 ---
 
 <!DOCTYPE html>
@@ -66,15 +73,34 @@ const external = (href: string) => /^https?:/.test(href);
 </div>
 
 <header class="op-top">
-    <a class="op-mark" href="#index"><Mark size={20} />{site.name}</a>
+    <a class="op-mark" href="#index" aria-label={site.name}><Mark size={20} /><span class="op-name">{site.name}</span></a>
     <p class="op-role mono muted">Developer — Cebu, PH</p>
     <nav class="op-nav mono" aria-label="Sections">
-        <a href="#index" data-nav="index" aria-current="page">Index</a>
-        <a href="#experience" data-nav="experience">Experience</a>
-        <a href="#about" data-nav="about">About</a>
-        <a href="#contact" data-nav="contact">Contact</a>
+        {sections.map((s, i) => (
+                <a href={`#${s.id}`} data-nav={s.id} aria-current={i === 0 ? "page" : undefined}>{s.label}</a>
+        ))}
     </nav>
+    <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="menu">
+        <span class="menu-bar"></span>
+        <span class="menu-bar"></span>
+    </button>
 </header>
+
+<!-- Phone menu (JS only; without JS the inline links above stay visible). -->
+<div class="menu" id="menu" inert>
+    <nav class="menu-nav" aria-label="Sections menu">
+        {sections.map((s, i) => (
+                <a href={`#${s.id}`} data-nav={s.id} class="menu-link" style={`--i:${i}`}>
+                    <span class="menu-mask"><span class="menu-label">{s.label}</span></span>
+                    <span class="menu-num mono muted">{pad(i + 1)}</span>
+                </a>
+        ))}
+    </nav>
+    <div class="menu-foot mono">
+        <p class="muted">Developer — Cebu, PH</p>
+        {email && <a href={email.href}>{email.label}</a>}
+    </div>
+</div>
 
 <main class="op-main">
 
