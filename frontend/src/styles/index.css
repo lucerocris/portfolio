@@ -29,7 +29,7 @@
 
     /* The index names: ~79px on a 1440×900 screen, scaled by width and height,
        so seven rows fit between the header and the footer. */
-    --display: clamp(40px, min(6.2vw, 8.8svh), 112px);
+    --display: clamp(40px, min(6.2vw, 7.7svh), 112px);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -414,7 +414,8 @@ html.js .view-case { padding-bottom: 0; padding-top: clamp(16px, 5svh, 56px); }
 
 /* Nook: three phone screens instead of one web screenshot. */
 .phones { display: flex; gap: clamp(10px, 1.2vw, 18px); justify-content: flex-end; }
-.phones img {
+.phones img,
+.phones video {
     width: auto;
     height: min(56svh, 520px);
     aspect-ratio: 520 / 1130;
@@ -423,11 +424,12 @@ html.js .view-case { padding-bottom: 0; padding-top: clamp(16px, 5svh, 56px); }
     border: 1px solid var(--rule);
     box-shadow: 0 24px 50px -16px rgb(0 0 0 / 0.18);
 }
-.phones img:nth-child(2) { translate: 0 -14px; }
+.phones > :nth-child(2) { translate: 0 -14px; }
+.phones video { display: block; background: var(--rule); }
 .case-phones figcaption { text-align: right; }
-html.js .view-case.is-active .phones img { animation: fade-up 0.8s var(--ease) both; }
-html.js .view-case.is-active .phones img:nth-child(2) { animation-delay: 0.08s; }
-html.js .view-case.is-active .phones img:nth-child(3) { animation-delay: 0.16s; }
+html.js .view-case.is-active .phones > * { animation: fade-up 0.8s var(--ease) both; }
+html.js .view-case.is-active .phones > :nth-child(2) { animation-delay: 0.08s; }
+html.js .view-case.is-active .phones > :nth-child(3) { animation-delay: 0.16s; }
 /* Loft: the desktop window with the phone screens laid over its corner. */
 .combo { position: relative; padding: 0 8% 8% 0; }
 .combo-desk {
@@ -698,8 +700,8 @@ html.js .op-top { view-transition-name: op-top; }
     .case-fig { grid-row: 3; grid-column: 1; width: 100%; margin-top: 16px; }
     .case-fig figcaption { display: none; }
     .phones { justify-content: space-between; gap: 8px; }
-    .phones img { height: auto; width: calc((100% - 16px) / 3); border-radius: 12px; }
-    .phones img:nth-child(2) { translate: none; }
+    .phones img, .phones video { height: auto; width: calc((100% - 16px) / 3); border-radius: 12px; }
+    .phones > :nth-child(2) { translate: none; }
     .case-body { grid-column: 1; padding: 0; margin-top: 20px; }
     .case-sub { font-size: 18px; line-height: 25px; }
     .case-copy { font-size: 14px; line-height: 21px; margin-top: 10px; }

@@ -40,7 +40,22 @@ const routeFromHash = () => {
   return views.has(name) ? name : 'index'
 }
 
+// Case videos load and play only while their case is open, and never with
+// reduced motion (the poster stays).
+const syncVideos = (name: string) => {
+  const view = views.get(name)
+  document.querySelectorAll<HTMLVideoElement>('video[data-case-video]').forEach((v) => {
+    if (!reduce && v.closest('.view') === view) {
+      v.preload = 'auto'
+      v.play().catch(() => {})
+    } else if (!v.paused) {
+      v.pause()
+    }
+  })
+}
+
 const setNav = (name: string) => {
+  syncVideos(name)
   const section = name.startsWith('work/') ? 'index' : name
   body.dataset.view = name.split('/')[0]
   navLinks.forEach((a) => {

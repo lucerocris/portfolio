@@ -3,8 +3,8 @@
  * list. Copy follows the CMS seed (backend/src/seed.ts) and the résumé
  * (~/personal/business/cv/resume.html); screenshots live in public/work/.
  *
- * The index is one screen and never scrolls: seven projects is the ceiling
- * (--display in index.css is sized for seven rows).
+ * The index is one screen and never scrolls: eight projects is the ceiling
+ * (--display in index.css is sized for eight rows).
  */
 
 export type Work = {
@@ -27,8 +27,12 @@ export type Work = {
   /** The case panel's button. `text` defaults to "Visit <label> ↗". */
   link?: { href: string; label: string; text?: string }
   image: { src: string; alt: string; caption: string; position?: string }
-  /** Phone screens shown in the case panel instead of the web screenshot. */
-  screens?: { src: string; alt: string }[]
+  /**
+   * Phone screens shown in the case panel instead of the web screenshot.
+   * With `video`, the screen is a muted loop and `src` is its poster; it only
+   * loads and plays while the case is open.
+   */
+  screens?: { src: string; alt: string; video?: { webm: string; mp4: string } }[]
   /** Caption under the phone screens. */
   screensCaption?: string
   /**
@@ -89,6 +93,33 @@ export const work: Work[] = [
       { src: '/work/loft-app-3.webp', alt: 'Loft Android app: Loft Assistant answering “What needs me?”' },
     ],
     screensCaption: 'Android — Inbox, Chat, Assistant',
+  },
+  {
+    slug: 'wedding',
+    name: 'Wedding',
+    title: 'Kath & Kristian',
+    tagline: 'Custom wedding site & RSVP',
+    summary: 'A custom wedding invitation site: a name-gated welcome, an RSVP that handles whole families, and a private responses page for the couple.',
+    subtitle: 'A wedding invitation that opens like a real one.',
+    body: [
+      'Guests type their name to open the invitation; one name unlocks the whole family, and the RSVP only lists the people actually invited. 137 guests in 86 parties, with RSVPs safe across several phones in one household. The couple get a private page with totals, filters, search and a CSV export.',
+      'Everything is drawn for this wedding: a curtain-reveal intro, the envelope, the heart sign with each guest’s name, a slot machine of photos and the drapery are 3D renders I made in Blender. Then it was tuned for cheap phones: the first screen went from 7 MB to 2 MB.',
+    ],
+    role: 'Sole developer\nDesign, 3D, build',
+    stack: 'Next.js, GSAP\nBlender, Upstash Redis',
+    stackShort: 'Next.js · GSAP · Blender · Redis',
+    status: 'Launching — Jan 2027',
+    image: { src: '/work/wedding.webp', alt: 'Wedding site on three phones: the name gate, the welcome heart sign and the photo slot machine', caption: 'Wedding site — on a phone' },
+    screens: [
+      { src: '/work/wedding-app-1.webp', alt: 'Wedding site: envelope and the name gate, “Your full name”' },
+      {
+        src: '/work/wedding-app-2.webp',
+        alt: 'Wedding site, recorded on a phone: curtain intro, name gate, then a scroll through the whole invitation',
+        video: { webm: '/work/wedding.webm', mp4: '/work/wedding.mp4' },
+      },
+      { src: '/work/wedding-app-3.webp', alt: 'Wedding site: a slot machine of the couple’s photos' },
+    ],
+    screensCaption: 'On a phone — gate, walkthrough (video), slot machine',
   },
   {
     slug: 'picklerank',

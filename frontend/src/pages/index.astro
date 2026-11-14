@@ -271,7 +271,13 @@ const sections = [
                     ) : p.screens ? (
                             <figure class="case-fig case-phones">
                                 <div class="phones">
-                                    {p.screens.map((s) => (
+                                    {p.screens.map((s) => s.video ? (
+                                            <video data-case-video muted loop playsinline preload="none" poster={s.src}
+                                                   width="520" height="1130" aria-label={s.alt}>
+                                                <source src={s.video.webm} type="video/webm">
+                                                <source src={s.video.mp4} type="video/mp4">
+                                            </video>
+                                    ) : (
                                             <img src={s.src} alt={s.alt} width="520" height="1130" loading="lazy" decoding="async">
                                     ))}
                                 </div>
