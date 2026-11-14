@@ -244,14 +244,38 @@ const sections = [
                                    rel={external(p.link.href) ? "noopener noreferrer" : undefined}>{p.link.text ?? `Visit ${p.link.label} ↗`}</a>
                         )}
                     </div>
-                    {p.screens ? (
+                    {p.desktop && p.screens ? (
+                            <figure class="case-fig case-combo">
+                                <div class="combo">
+                                    <div class="combo-desk">
+                                        {p.desktop.map((d, j) => (
+                                                <img src={d.src} alt={d.alt} width="1440" height="900" loading="lazy" decoding="async"
+                                                     data-shot={j} class={j === 0 ? "is-on" : undefined}>
+                                        ))}
+                                    </div>
+                                    <div class="combo-phones">
+                                        {p.screens.map((s) => (
+                                                <img src={s.src} alt={s.alt} width="600" height="1333" loading="lazy" decoding="async">
+                                        ))}
+                                    </div>
+                                </div>
+                                <figcaption class="combo-cap mono muted">
+                                    <span class="combo-tabs" role="group" aria-label="Desktop screen">Desktop —
+                                        {p.desktop.map((d, j) => (
+                                                <button type="button" data-shot={j} aria-pressed={j === 0 ? "true" : "false"}>{d.label}</button>
+                                        ))}
+                                    </span>
+                                    <span>{p.screensCaption}</span>
+                                </figcaption>
+                            </figure>
+                    ) : p.screens ? (
                             <figure class="case-fig case-phones">
                                 <div class="phones">
                                     {p.screens.map((s) => (
                                             <img src={s.src} alt={s.alt} width="520" height="1130" loading="lazy" decoding="async">
                                     ))}
                                 </div>
-                                <figcaption class="mono muted">iOS app — Featured, Map, Café</figcaption>
+                                <figcaption class="mono muted">{p.screensCaption}</figcaption>
                             </figure>
                     ) : (
                             <figure class="case-fig">

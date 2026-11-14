@@ -374,3 +374,16 @@ if (clock) {
   tick()
   setInterval(tick, 20_000)
 }
+
+/* ---------- Loft: desktop screen switch (Inbox / Board) ---------- */
+
+for (const fig of document.querySelectorAll<HTMLElement>('.case-combo')) {
+  const buttons = fig.querySelectorAll<HTMLButtonElement>('.combo-tabs button')
+  const shots = fig.querySelectorAll<HTMLImageElement>('.combo-desk img')
+  buttons.forEach((b) =>
+    b.addEventListener('click', () => {
+      buttons.forEach((x) => x.setAttribute('aria-pressed', String(x === b)))
+      shots.forEach((s) => s.classList.toggle('is-on', s.dataset.shot === b.dataset.shot))
+    }),
+  )
+}

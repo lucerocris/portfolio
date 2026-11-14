@@ -3,7 +3,8 @@
  * list. Copy follows the CMS seed (backend/src/seed.ts) and the résumé
  * (~/personal/business/cv/resume.html); screenshots live in public/work/.
  *
- * The index is one screen and never scrolls: six projects is the ceiling.
+ * The index is one screen and never scrolls: seven projects is the ceiling
+ * (--display in index.css is sized for seven rows).
  */
 
 export type Work = {
@@ -28,6 +29,13 @@ export type Work = {
   image: { src: string; alt: string; caption: string; position?: string }
   /** Phone screens shown in the case panel instead of the web screenshot. */
   screens?: { src: string; alt: string }[]
+  /** Caption under the phone screens. */
+  screensCaption?: string
+  /**
+   * Desktop app screens. With `screens` too, the case panel shows the desktop
+   * window with the phones laid over its corner; the first one is `image`.
+   */
+  desktop?: { src: string; alt: string; label: string }[]
 }
 
 export const work: Work[] = [
@@ -53,6 +61,34 @@ export const work: Work[] = [
       { src: '/work/nook-app-2.webp', alt: 'Nook iOS app: map with a list of nearby cafés' },
       { src: '/work/nook-app-3.webp', alt: 'Nook iOS app: café detail with rating, hours and amenities' },
     ],
+    screensCaption: 'iOS app — Featured, Map, Café',
+  },
+  {
+    slug: 'loft',
+    name: 'Loft',
+    title: 'Loft',
+    tagline: 'Desktop & Android — AI agent control',
+    summary: 'One inbox for every Claude Code agent on my laptop: a desktop app, and an Android app to answer them by voice from anywhere.',
+    subtitle: 'Mission control for background coding agents, on the desk and in the pocket.',
+    body: [
+      'I run many Claude Code agents at once, across two accounts with separate billing. Loft puts them all in one place: who is working, who needs an answer and what it asked, with an inbox and a board, projects, live usage limits per account, and a live terminal into any agent.',
+      'The Android app pairs with the laptop over Tailscale using a revocable per-phone token, so nothing is open to the internet. Agents waiting on me arrive as notifications, questions come up as tappable choices, and I can answer by voice: speech streams to Whisper running on the laptop, with words appearing as I talk.',
+    ],
+    role: 'Design and build\nDesktop, Android, server',
+    stack: 'Python, Tauri, xterm.js\nFlutter, Tailscale, Whisper',
+    stackShort: 'Python · Tauri · Flutter · Whisper',
+    status: 'In daily use',
+    image: { src: '/work/loft.webp', alt: 'Loft desktop app: agents grouped by project, one asking how many times failed webhooks should retry', caption: 'Desktop app — Inbox' },
+    desktop: [
+      { src: '/work/loft.webp', alt: 'Loft desktop app: agents grouped by project, one asking how many times failed webhooks should retry', label: 'Inbox' },
+      { src: '/work/loft-board.webp', alt: 'Loft desktop app: board view with Todo, Working, Needs you and Done columns per project', label: 'Board' },
+    ],
+    screens: [
+      { src: '/work/loft-app-1.webp', alt: 'Loft Android app: inbox grouped by project with usage bars for two accounts' },
+      { src: '/work/loft-app-2.webp', alt: 'Loft Android app: chat view with an agent question shown as tappable choices' },
+      { src: '/work/loft-app-3.webp', alt: 'Loft Android app: Loft Assistant answering “What needs me?”' },
+    ],
+    screensCaption: 'Android — Inbox, Chat, Assistant',
   },
   {
     slug: 'picklerank',

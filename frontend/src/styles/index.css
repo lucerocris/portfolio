@@ -27,9 +27,9 @@
     --sans: "Archivo Variable", ui-sans-serif, system-ui, sans-serif;
     --mono: "JetBrains Mono Variable", ui-monospace, "SFMono-Regular", monospace;
 
-    /* The index names: ~90px on a 1440×900 screen, scaled by width and height,
-       so six rows fit between the header and the footer. */
-    --display: clamp(44px, min(6.2vw, 10.2svh), 124px);
+    /* The index names: ~79px on a 1440×900 screen, scaled by width and height,
+       so seven rows fit between the header and the footer. */
+    --display: clamp(40px, min(6.2vw, 8.8svh), 112px);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -428,6 +428,61 @@ html.js .view-case { padding-bottom: 0; padding-top: clamp(16px, 5svh, 56px); }
 html.js .view-case.is-active .phones img { animation: fade-up 0.8s var(--ease) both; }
 html.js .view-case.is-active .phones img:nth-child(2) { animation-delay: 0.08s; }
 html.js .view-case.is-active .phones img:nth-child(3) { animation-delay: 0.16s; }
+/* Loft: the desktop window with the phone screens laid over its corner. */
+.combo { position: relative; padding: 0 8% 8% 0; }
+.combo-desk {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    border-radius: 6px;
+    overflow: clip;
+    background: #111214;
+    box-shadow: 0 0 0 1px rgb(0 0 0 / 0.5), 0 24px 60px -12px rgb(0 0 0 / 0.22);
+}
+.case-fig .combo-desk img {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    border-radius: 0;
+    box-shadow: none;
+    opacity: 0;
+    transition: opacity 0.45s var(--ease);
+}
+.case-fig .combo-desk img.is-on { opacity: 1; }
+.combo-phones {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    height: 78%;
+    display: flex;
+    align-items: flex-end;
+    gap: clamp(6px, 0.8vw, 12px);
+}
+.case-fig .combo-phones img {
+    width: auto;
+    height: 100%;
+    aspect-ratio: 600 / 1333;
+    object-fit: cover;
+    border-radius: clamp(10px, 1.2vw, 18px);
+    border: 1px solid rgb(255 255 255 / 0.12);
+    box-shadow: 0 0 0 1px rgb(0 0 0 / 0.6), 0 24px 50px -14px rgb(0 0 0 / 0.45);
+}
+.case-fig .combo-phones img:nth-child(2) { height: 92%; margin-bottom: 4%; }
+.case-fig .combo-phones img:nth-child(3) { height: 84%; }
+.combo-cap { display: flex; justify-content: space-between; gap: 16px; }
+.combo-tabs button {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: 0;
+    padding: 0 0 0 6px;
+    cursor: pointer;
+}
+.combo-tabs button[aria-pressed="true"] { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+html:not(.js) .combo-tabs button:not(:first-child) { display: none; }
+html.js .view-case.is-active .combo-phones img { animation: fade-up 0.8s var(--ease) both; animation-delay: 0.2s; }
+html.js .view-case.is-active .combo-phones img:nth-child(2) { animation-delay: 0.28s; }
+html.js .view-case.is-active .combo-phones img:nth-child(3) { animation-delay: 0.36s; }
+
 .pager {
     grid-column: 1 / -1;
     align-self: end;
