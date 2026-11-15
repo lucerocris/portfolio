@@ -28,8 +28,8 @@
     --mono: "JetBrains Mono Variable", ui-monospace, "SFMono-Regular", monospace;
 
     /* The index names: ~79px on a 1440×900 screen, scaled by width and height,
-       so seven rows fit between the header and the footer. */
-    --display: clamp(40px, min(6.2vw, 8.8svh), 112px);
+       so eight rows fit between the header and the footer. */
+    --display: clamp(40px, min(6.2vw, 7.7svh), 112px);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -401,6 +401,7 @@ html.js .view-case { padding-bottom: 0; padding-top: clamp(16px, 5svh, 56px); }
 .case-copy { font-size: 15px; line-height: 23px; opacity: 0.8; max-width: 520px; margin-top: 14px; }
 .facts { display: flex; gap: 36px; margin: clamp(20px, 5svh, 48px) 0 clamp(20px, 3.5svh, 32px); }
 .facts dd { font-size: 14px; line-height: 20px; margin-top: 6px; white-space: pre-line; }
+.case-links { display: flex; flex-wrap: wrap; gap: 8px; }
 .case-fig { grid-column: 6 / 13; justify-self: end; margin-top: clamp(20px, 5svh, 48px); width: min(100%, calc(52svh * 1.6)); }
 .case-fig img {
     width: 100%;

@@ -240,8 +240,12 @@ const sections = [
                             <div><dt class="mono muted">Status</dt><dd>{p.status}</dd></div>
                         </dl>
                         {p.link && (
-                                <a class="btn mono" href={p.link.href} target={external(p.link.href) ? "_blank" : undefined}
-                                   rel={external(p.link.href) ? "noopener noreferrer" : undefined}>{p.link.text ?? `Visit ${p.link.label} ↗`}</a>
+                                <div class="case-links">
+                                    {[p.link, ...(p.moreLinks ?? [])].map((l) => (
+                                            <a class="btn mono" href={l.href} target={external(l.href) ? "_blank" : undefined}
+                                               rel={external(l.href) ? "noopener noreferrer" : undefined}>{l.text ?? `Visit ${l.label} ↗`}</a>
+                                    ))}
+                                </div>
                         )}
                     </div>
                     {p.desktop && p.screens ? (

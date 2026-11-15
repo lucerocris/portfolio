@@ -3,8 +3,8 @@
  * list. Copy follows the CMS seed (backend/src/seed.ts) and the résumé
  * (~/personal/business/cv/resume.html); screenshots live in public/work/.
  *
- * The index is one screen and never scrolls: seven projects is the ceiling
- * (--display in index.css is sized for seven rows).
+ * The index is one screen and never scrolls: eight projects is the ceiling
+ * (--display in index.css is sized for eight rows).
  */
 
 export type Work = {
@@ -26,6 +26,8 @@ export type Work = {
   status: string
   /** The case panel's button. `text` defaults to "Visit <label> ↗". */
   link?: { href: string; label: string; text?: string }
+  /** More buttons beside `link`, for a case that covers several sites. */
+  moreLinks?: { href: string; label: string; text?: string }[]
   image: { src: string; alt: string; caption: string; position?: string }
   /** Phone screens shown in the case panel instead of the web screenshot. */
   screens?: { src: string; alt: string }[]
@@ -178,6 +180,35 @@ export const work: Work[] = [
     stackShort: 'Shopify · Liquid · Dawn',
     status: 'Pre-launch',
     image: { src: '/work/napatlas.webp', alt: 'Nap Atlas home page: “Travel Different. Rest Different.” with a red pillow clipped to a backpack', caption: 'Nap Atlas — home', position: 'center' },
+  },
+  {
+    slug: 'wordpress',
+    name: 'WordPress',
+    title: 'WordPress sites',
+    tagline: 'Exploring WordPress — 2 demo sites',
+    summary: 'Me exploring WordPress: two made-up businesses built as custom block themes, a ceramics shop and an architecture studio.',
+    subtitle: 'Me exploring how far a WordPress block theme can go.',
+    body: [
+      'These are WordPress sites I built to explore the platform, not client work: both businesses are made up. Hurno is a ceramics shop with a glaze picker, a mug that turns as you scroll and a bag that checks out through Messenger. Silong is an architecture studio whose hero moves the real Iloilo sun across the house through the day.',
+      'Each is a custom block theme, so every page stays editable in the WordPress editor, and the interactive parts are shortcodes. The pottery and buildings are 3D renders I made in Blender. A last pass made them fast on phones, and a static export runs them free on Vercel.',
+    ],
+    role: 'Design and build\nTheme, 3D, motion',
+    stack: 'WordPress, PHP\nGSAP, Blender',
+    stackShort: 'WordPress · PHP · GSAP · Blender',
+    status: 'Demo sites — Nov 2026',
+    link: { href: 'https://hurno.vercel.app', label: 'hurno.vercel.app', text: 'Visit Hurno ↗' },
+    moreLinks: [{ href: 'https://silong-architects.vercel.app', label: 'silong-architects.vercel.app', text: 'Visit Silong ↗' }],
+    image: { src: '/work/wordpress.webp', alt: 'Hurno home page: glossy 3D mugs, a plate, a bowl and a vase floating over a giant HURNO wordmark', caption: 'Hurno — home' },
+    desktop: [
+      { src: '/work/wordpress.webp', alt: 'Hurno home page: glossy 3D mugs, a plate, a bowl and a vase floating over a giant HURNO wordmark', label: 'Hurno' },
+      { src: '/work/wordpress-silong.webp', alt: 'Silong Architects home page: a raised house rendered at 9 AM, with a dial to move the sun', label: 'Silong' },
+    ],
+    screens: [
+      { src: '/work/wordpress-app-1.webp', alt: 'Hurno on a phone: floating 3D pottery over the HURNO wordmark' },
+      { src: '/work/wordpress-app-2.webp', alt: 'Hurno on a phone: the shop, a Tasa mug with six glaze swatches' },
+      { src: '/work/wordpress-app-3.webp', alt: 'Silong Architects on a phone: the house at 9 AM with the sun dial' },
+    ],
+    screensCaption: 'Phones — Hurno, Hurno shop, Silong',
   },
 ]
 
