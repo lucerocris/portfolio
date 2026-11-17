@@ -663,7 +663,7 @@ html.js .op-top { view-transition-name: op-top; }
     .idx-wrap { margin-top: clamp(24px, 6svh, 64px); }
     .idx li + li { margin-top: 4px; }
     /* The number stays beside the name; only the description wraps to its own
-       line. 11vw fits the longest name ("Pocket Concerts") and its number on
+       line. 11vw fits the longest name and its number on
        one line down to a 320px screen, and the mask cap keeps the number from
        ever being pushed under a name. */
     .idx-link { flex-wrap: wrap; gap: 0 8px; }

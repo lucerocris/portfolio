@@ -111,24 +111,6 @@ export const work: Work[] = [
     image: { src: '/work/picklerank.webp', alt: 'PickleRank PH home page: “Earn your rank.”', caption: 'prph.app — home' },
   },
   {
-    slug: 'pocket-concerts',
-    name: 'Pocket Concerts',
-    title: 'Pocket Concerts',
-    tagline: '600 registrants, one night',
-    summary: 'Registration, QR tickets and door check-in for a live concert. Only engineer; it took 600 registrants without falling over.',
-    subtitle: 'Event registration that held up on the night.',
-    body: [
-      'The whole event in one system: public registration, QR-code tickets sent by email, an in-browser QR scanner staff used at the door, a donation path, and an admin console for the organisers.',
-      'It handled 600 registrants for a single event. The interface was kept deliberately plain, so the form stayed usable on whatever phone someone was holding in the queue.',
-    ],
-    role: 'Software developer\nOnly engineer',
-    stack: 'Next.js, Firebase\nTailwind CSS, shadcn/ui',
-    stackShort: 'Next.js · Firebase · QR check-in',
-    status: 'Shipped — Oct 2025',
-    link: { href: '/projects/pocket-concerts', label: 'full case study', text: 'Read the full case study →' },
-    image: { src: '/work/pocket-concerts.webp', alt: 'Pocket Concerts admin: donations dashboard with totals and a donor table', caption: 'Admin console — donations', position: 'left top' },
-  },
-  {
     slug: 'bijou',
     name: 'Bijou',
     title: 'Bijou & Charms',
@@ -241,12 +223,5 @@ export const experience: Role[] = [
     title: 'Independent Developer',
     org: 'Self-employed · Cebu',
     note: 'Websites, software and automation for small businesses, including a Shopify storefront rebuilt for conversion.',
-  },
-  {
-    when: 'Oct 2025',
-    title: 'Software Developer',
-    org: 'Pocket Concerts',
-    note: 'Only engineer on registration and door check-in for a concert with 600 registrants.',
-    href: '#work/pocket-concerts',
   },
 ]
